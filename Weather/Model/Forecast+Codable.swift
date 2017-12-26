@@ -55,7 +55,7 @@ extension Forecast: Decodable {
         temperatureMinimum = try mainStructure.decode(Double.self, forKey: .temperatureMinimum)
         temperatureMaximum = try mainStructure.decode(Double.self, forKey: .temperatureMaximum)
         
-        visibility = try values.decode(Int.self, forKey: .visibility)
+        visibility = try values.decodeIfPresent(Int.self, forKey: .visibility)
         wind = try values.decode(WindCondition.self, forKey: .wind)
         
         let cloudsStructure = try values.nestedContainer(keyedBy: CloudsCodingKeys.self, forKey: .clouds)
@@ -65,20 +65,20 @@ extension Forecast: Decodable {
         
         if values.contains(.rain) {
             let rainStructure = try values.nestedContainer(keyedBy: RainCodingKeys.self, forKey: .rain)
-            rainVolume = try rainStructure.decode(Double.self, forKey: .rainVolume)
+            rainVolume = try rainStructure.decodeIfPresent(Double.self, forKey: .rainVolume)
         } else {
             rainVolume = nil
         }
         
         if values.contains(.snow) {
             let snowStructure = try values.nestedContainer(keyedBy: SnowCodingKeys.self, forKey: .snow)
-            snowVolume = try snowStructure.decode(Double.self, forKey: .snowVolume)
+            snowVolume = try snowStructure.decodeIfPresent(Double.self, forKey: .snowVolume)
         } else {
             snowVolume = nil
         }
         
         let systemStructure = try values.nestedContainer(keyedBy: SysCodingKeys.self, forKey: .sys)
-        sunset = try systemStructure.decode(Date.self, forKey: .sunset)
-        sunrise = try systemStructure.decode(Date.self, forKey: .sunrise)
+        sunset = try systemStructure.decodeIfPresent(Date.self, forKey: .sunset)
+        sunrise = try systemStructure.decodeIfPresent(Date.self, forKey: .sunrise)
     }
 }

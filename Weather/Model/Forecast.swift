@@ -17,7 +17,7 @@ struct Forecast {
     let temperatureMinimum: Double
     let temperatureMaximum: Double
     
-    let visibility: Int
+    let visibility: Int?
     let wind: WindCondition
     let clouds: Double
     let date: Date
@@ -25,8 +25,8 @@ struct Forecast {
     let rainVolume: Double?
     let snowVolume: Double?
     
-    let sunrise: Date
-    let sunset: Date
+    let sunrise: Date?
+    let sunset: Date?
 }
 
 struct WeatherCondition: Codable {
@@ -44,7 +44,7 @@ struct WeatherCondition: Codable {
 
 struct WindCondition: Codable {
     let speed: Double
-    let degrees: Int
+    let degrees: Double
     
     enum CodingKeys: String, CodingKey {
         case speed

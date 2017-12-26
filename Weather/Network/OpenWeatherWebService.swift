@@ -24,13 +24,20 @@ class OpenWeatherWebService: BaseWebService, WebDataService {
     
     private let baseAPIPath = "https://api.openweathermap.org/data/2.5"
     
-    private func buildURL(pathComponent: String) throws -> URL {
+    private let jsonDecoder: JSONDecoder = {
+        let jsonDecoder = JSONDecoder()
+        jsonDecoder.dateDecodingStrategy = .secondsSince1970
+        return jsonDecoder
+    }()
+    
+    private func buildURL(pathComponent: String, additionalQueryItems: [URLQueryItem] = []) throws -> URL {
         guard var component = URLComponents(string: baseAPIPath) else {
             throw OpenWeatherError.unableToBuildURLComponent
         }
         component.path.append(pathComponent)
         
         component.queryItems = configuration.queryItems
+        component.queryItems?.append(contentsOf: additionalQueryItems)
         
         guard let url = component.url else {
             throw OpenWeatherError.unableToBuildURLFromComponent
@@ -43,13 +50,11 @@ class OpenWeatherWebService: BaseWebService, WebDataService {
             completion(.error(OpenWeatherError.urlUnavailable))
             return
         }
-        self.downloadData(at: url, completion: { result in
+        self.downloadData(at: url, completion: { [unowned self] result in
             switch result {
             case .success(let data):
-                let jsonDecoder = JSONDecoder()
-                jsonDecoder.dateDecodingStrategy = .secondsSince1970
                 do {
-                    let forecast = try jsonDecoder.decode(Forecast.self, from: data)
+                    let forecast = try self.jsonDecoder.decode(Forecast.self, from: data)
                     completion(.success(forecast))
                 } catch {
                     completion(.error(error))
@@ -60,4 +65,30 @@ class OpenWeatherWebService: BaseWebService, WebDataService {
             }
         })
     }
+    
+    func getForecasts(days: Int, completion: @escaping (WSResult<[Forecast]>) -> Void) {
+        guard let url = try? self.buildURL(pathComponent: "/forecast", additionalQueryItems: [URLQueryItem(name: "cnt", value: "\(days)")]) else {
+            completion(.error(OpenWeatherError.urlUnavailable))
+            return
+        }
+        
+        self.downloadData(at: url, completion: { [unowned self] result in
+            switch result {
+            case .success(let data):
+                do {
+                    let forecasts = try self.jsonDecoder.decode(MultipleForecast.self, from: data)
+                    completion(.success(forecasts.list))
+                } catch {
+                    completion(.error(error))
+                }
+                
+            case .error(let error):
+                completion(.error(error))
+            }
+        })
+    }
+}
+
+fileprivate struct MultipleForecast: Decodable {
+    let list: [Forecast]
 }
