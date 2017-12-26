@@ -16,6 +16,7 @@
 		1872535B1FF2895700CECD5B /* WeatherUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872535A1FF2895700CECD5B /* WeatherUITests.swift */; };
 		18C47BED1FF28B8400D2FCB3 /* Forecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */; };
 		18C47BEF1FF297D000D2FCB3 /* Forecast+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BEE1FF297D000D2FCB3 /* Forecast+Codable.swift */; };
+		18C47BF11FF298ED00D2FCB3 /* ForecastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BF01FF298ED00D2FCB3 /* ForecastTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		1872535C1FF2895700CECD5B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forecast.swift; sourceTree = "<group>"; };
 		18C47BEE1FF297D000D2FCB3 /* Forecast+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Forecast+Codable.swift"; sourceTree = "<group>"; };
+		18C47BF01FF298ED00D2FCB3 /* ForecastTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				1872534F1FF2895700CECD5B /* WeatherTests.swift */,
+				18C47BF01FF298ED00D2FCB3 /* ForecastTests.swift */,
 				187253511FF2895700CECD5B /* Info.plist */,
 			);
 			path = WeatherTests;
