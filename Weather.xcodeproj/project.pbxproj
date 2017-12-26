@@ -106,9 +106,8 @@
 			isa = PBXGroup;
 			children = (
 				1872533A1FF2895700CECD5B /* AppDelegate.swift */,
-				18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */,
-				18C47BEE1FF297D000D2FCB3 /* Forecast+Codable.swift */,
 				18C47BF31FF2AD1F00D2FCB3 /* Network */,
+				18C47BF21FF2ACBE00D2FCB3 /* Model */,
 				1872533C1FF2895700CECD5B /* ViewController.swift */,
 				1872533E1FF2895700CECD5B /* Main.storyboard */,
 				187253411FF2895700CECD5B /* Assets.xcassets */,
@@ -135,6 +134,15 @@
 				1872535C1FF2895700CECD5B /* Info.plist */,
 			);
 			path = WeatherUITests;
+			sourceTree = "<group>";
+		};
+		18C47BF21FF2ACBE00D2FCB3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */,
+				18C47BEE1FF297D000D2FCB3 /* Forecast+Codable.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		18C47BF31FF2AD1F00D2FCB3 /* Network */ = {
