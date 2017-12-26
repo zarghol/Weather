@@ -18,6 +18,8 @@
 		18C47BEF1FF297D000D2FCB3 /* Forecast+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BEE1FF297D000D2FCB3 /* Forecast+Codable.swift */; };
 		18C47BF11FF298ED00D2FCB3 /* ForecastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BF01FF298ED00D2FCB3 /* ForecastTests.swift */; };
 		18C47BF51FF2AD9A00D2FCB3 /* BaseWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BF41FF2AD9A00D2FCB3 /* BaseWebService.swift */; };
+		18C47BF71FF2B34F00D2FCB3 /* OpenWeatherWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BF61FF2B34F00D2FCB3 /* OpenWeatherWebService.swift */; };
+		18C47BF91FF2BCA300D2FCB3 /* OpenWeatherConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BF81FF2BCA300D2FCB3 /* OpenWeatherConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +57,8 @@
 		18C47BEE1FF297D000D2FCB3 /* Forecast+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Forecast+Codable.swift"; sourceTree = "<group>"; };
 		18C47BF01FF298ED00D2FCB3 /* ForecastTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastTests.swift; sourceTree = "<group>"; };
 		18C47BF41FF2AD9A00D2FCB3 /* BaseWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseWebService.swift; sourceTree = "<group>"; };
+		18C47BF61FF2B34F00D2FCB3 /* OpenWeatherWebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWeatherWebService.swift; sourceTree = "<group>"; };
+		18C47BF81FF2BCA300D2FCB3 /* OpenWeatherConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWeatherConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +153,8 @@
 			isa = PBXGroup;
 			children = (
 				18C47BF41FF2AD9A00D2FCB3 /* BaseWebService.swift */,
+				18C47BF61FF2B34F00D2FCB3 /* OpenWeatherWebService.swift */,
+				18C47BF81FF2BCA300D2FCB3 /* OpenWeatherConfiguration.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -289,7 +295,9 @@
 			files = (
 				1872533D1FF2895700CECD5B /* ViewController.swift in Sources */,
 				18C47BEF1FF297D000D2FCB3 /* Forecast+Codable.swift in Sources */,
+				18C47BF91FF2BCA300D2FCB3 /* OpenWeatherConfiguration.swift in Sources */,
 				18C47BED1FF28B8400D2FCB3 /* Forecast.swift in Sources */,
+				18C47BF71FF2B34F00D2FCB3 /* OpenWeatherWebService.swift in Sources */,
 				18C47BF51FF2AD9A00D2FCB3 /* BaseWebService.swift in Sources */,
 				1872533B1FF2895700CECD5B /* AppDelegate.swift in Sources */,
 			);
