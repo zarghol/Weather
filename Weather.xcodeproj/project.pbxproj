@@ -14,6 +14,7 @@
 		187253451FF2895700CECD5B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 187253431FF2895700CECD5B /* LaunchScreen.storyboard */; };
 		187253501FF2895700CECD5B /* WeatherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872534F1FF2895700CECD5B /* WeatherTests.swift */; };
 		1872535B1FF2895700CECD5B /* WeatherUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872535A1FF2895700CECD5B /* WeatherUITests.swift */; };
+		18C47BED1FF28B8400D2FCB3 /* Forecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		187253561FF2895700CECD5B /* WeatherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1872535A1FF2895700CECD5B /* WeatherUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherUITests.swift; sourceTree = "<group>"; };
 		1872535C1FF2895700CECD5B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forecast.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				1872533A1FF2895700CECD5B /* AppDelegate.swift */,
+				18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */,
 				1872533C1FF2895700CECD5B /* ViewController.swift */,
 				1872533E1FF2895700CECD5B /* Main.storyboard */,
 				187253411FF2895700CECD5B /* Assets.xcassets */,
@@ -260,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1872533D1FF2895700CECD5B /* ViewController.swift in Sources */,
+				18C47BED1FF28B8400D2FCB3 /* Forecast.swift in Sources */,
 				1872533B1FF2895700CECD5B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
