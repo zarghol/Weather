@@ -17,6 +17,7 @@
 		18C47BED1FF28B8400D2FCB3 /* Forecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */; };
 		18C47BEF1FF297D000D2FCB3 /* Forecast+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BEE1FF297D000D2FCB3 /* Forecast+Codable.swift */; };
 		18C47BF11FF298ED00D2FCB3 /* ForecastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BF01FF298ED00D2FCB3 /* ForecastTests.swift */; };
+		18C47BF51FF2AD9A00D2FCB3 /* BaseWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C47BF41FF2AD9A00D2FCB3 /* BaseWebService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forecast.swift; sourceTree = "<group>"; };
 		18C47BEE1FF297D000D2FCB3 /* Forecast+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Forecast+Codable.swift"; sourceTree = "<group>"; };
 		18C47BF01FF298ED00D2FCB3 /* ForecastTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastTests.swift; sourceTree = "<group>"; };
+		18C47BF41FF2AD9A00D2FCB3 /* BaseWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseWebService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				1872533A1FF2895700CECD5B /* AppDelegate.swift */,
 				18C47BEC1FF28B8400D2FCB3 /* Forecast.swift */,
 				18C47BEE1FF297D000D2FCB3 /* Forecast+Codable.swift */,
+				18C47BF31FF2AD1F00D2FCB3 /* Network */,
 				1872533C1FF2895700CECD5B /* ViewController.swift */,
 				1872533E1FF2895700CECD5B /* Main.storyboard */,
 				187253411FF2895700CECD5B /* Assets.xcassets */,
@@ -132,6 +135,14 @@
 				1872535C1FF2895700CECD5B /* Info.plist */,
 			);
 			path = WeatherUITests;
+			sourceTree = "<group>";
+		};
+		18C47BF31FF2AD1F00D2FCB3 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				18C47BF41FF2AD9A00D2FCB3 /* BaseWebService.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +282,7 @@
 				1872533D1FF2895700CECD5B /* ViewController.swift in Sources */,
 				18C47BEF1FF297D000D2FCB3 /* Forecast+Codable.swift in Sources */,
 				18C47BED1FF28B8400D2FCB3 /* Forecast.swift in Sources */,
+				18C47BF51FF2AD9A00D2FCB3 /* BaseWebService.swift in Sources */,
 				1872533B1FF2895700CECD5B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
