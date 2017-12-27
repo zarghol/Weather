@@ -21,6 +21,8 @@ struct Forecast {
     let wind: WindCondition
     let clouds: Double
     let date: Date
+    
+    let city: String?
 
     let rainVolume: Measurement<UnitLength>?
     let snowVolume: Measurement<UnitLength>?
@@ -29,14 +31,15 @@ struct Forecast {
     let sunset: Date?
 }
 
-struct WeatherCondition: Codable {
-    let weatherId: Int
+
+struct WeatherCondition: Decodable {
+    let type: WeatherType
     let title: String
     let description: String
     let icon: String
     
     enum CodingKeys: String, CodingKey {
-        case weatherId = "id"
+        case type = "id"
         case title = "main"
         case description, icon
     }

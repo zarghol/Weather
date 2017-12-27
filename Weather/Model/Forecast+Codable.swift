@@ -14,6 +14,7 @@ extension Forecast {
         case conditions = "weather"
         case main, visibility, wind, clouds
         case date = "dt"
+        case city = "name"
         case rain, snow, sys
     }
     
@@ -67,6 +68,7 @@ extension Forecast: Decodable {
         clouds = try cloudsStructure.decode(Double.self, forKey: .all)
         
         date = try values.decode(Date.self, forKey: .date)
+        city = try values.decodeIfPresent(String.self, forKey: .city)
         
         if values.contains(.rain) {
             let rainStructure = try values.nestedContainer(keyedBy: RainCodingKeys.self, forKey: .rain)
