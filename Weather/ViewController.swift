@@ -29,6 +29,12 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var forecastsCollectionView: UICollectionView!
     
+    let temperatureFormatter: MeasurementFormatter = {
+        let temperatureFormatter = MeasurementFormatter()
+        temperatureFormatter.unitOptions = .temperatureWithoutUnit
+        return temperatureFormatter
+    }()
+    
     // MARK: -
     
     let ws = OpenWeatherWebService(configuration: .default)
@@ -36,17 +42,16 @@ class ViewController: UIViewController {
     var forecast: Forecast? {
         didSet {
             guard let forecast = forecast else {
-                // TODO: display an alert
+                self.cityButton.setTitle("Choose a city", for: .normal)
                 return
             }
-            print("data : \(forecast.conditions.first!.title)")
             
-            let temperatureFormatter = MeasurementFormatter()
-            temperatureFormatter.unitOptions = .temperatureWithoutUnit
             DispatchQueue.main.async {
-                self.currentTemperatureLabel.text = temperatureFormatter.string(from: forecast.temperature)
-                self.minTemperatureLabel.text = temperatureFormatter.string(from: forecast.temperatureMinimum)
-                self.maxTemperatureLabel.text = temperatureFormatter.string(from: forecast.temperatureMaximum)
+                self.view.backgroundColor = forecast.conditions.first?.type.backgroundColor ?? .white
+                self.cityButton.setTitle(forecast.city, for: .normal)
+                self.currentTemperatureLabel.text = self.temperatureFormatter.string(from: forecast.temperature)
+                self.minTemperatureLabel.text = self.temperatureFormatter.string(from: forecast.temperatureMinimum)
+                self.maxTemperatureLabel.text = self.temperatureFormatter.string(from: forecast.temperatureMaximum)
                 self.weatherDescriptionLabel.text = forecast.conditions.first?.description
                 
                 let hourFormatter = DateFormatter()
@@ -73,9 +78,18 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    var nextForecasts = [Forecast]() {
+        didSet {
+            DispatchQueue.main.async {
+                self.forecastsCollectionView.reloadData()
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        forecastsCollectionView.dataSource = self
         
         self.ws.getCurrentData { [weak self] result in
             switch result {
@@ -94,10 +108,32 @@ class ViewController: UIViewController {
                 print("unable to get forecast on \(numberOfDays) days : \(error)")
                 
             case .success(let forecasts):
-                print("available : \(forecasts.count)")
+                self.nextForecasts = forecasts
             }
         }
     }
-
 }
+
+extension ViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.nextForecasts.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let dequeuedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "forecastCell", for: indexPath)
+        guard let cell = dequeuedCell as? ForecastCell else {
+            return dequeuedCell
+        }
+        let data = nextForecasts[indexPath.row]
+        let dayFormatter = DateFormatter()
+        dayFormatter.timeStyle = .short
+        cell.dayLabel.text = dayFormatter.string(from: data.date)
+        cell.minLabel.text = temperatureFormatter.string(from: data.temperatureMinimum)
+        cell.maxLabel.text = temperatureFormatter.string(from: data.temperatureMaximum)
+        
+        return cell
+    }
+}
+
+// formatter : if today => hour else, date + hour
 
