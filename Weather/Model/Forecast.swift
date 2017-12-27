@@ -11,19 +11,19 @@ import Foundation
 struct Forecast {
     let conditions: [WeatherCondition]
     
-    let temperature: Double
-    let pressure: Double
+    let temperature: Measurement<UnitTemperature>
+    let pressure: Measurement<UnitPressure>
     let humidity: Double
-    let temperatureMinimum: Double
-    let temperatureMaximum: Double
+    let temperatureMinimum: Measurement<UnitTemperature>
+    let temperatureMaximum: Measurement<UnitTemperature>
     
     let visibility: Int?
     let wind: WindCondition
     let clouds: Double
     let date: Date
 
-    let rainVolume: Double?
-    let snowVolume: Double?
+    let rainVolume: Measurement<UnitLength>?
+    let snowVolume: Measurement<UnitLength>?
     
     let sunrise: Date?
     let sunset: Date?
