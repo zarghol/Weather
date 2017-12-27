@@ -10,6 +10,27 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    // MARK: - Outlets
+    
+    @IBOutlet weak var cityButton: UIButton!
+    
+    @IBOutlet weak var currentTemperatureLabel: UILabel!
+    @IBOutlet weak var minTemperatureLabel: UILabel!
+    @IBOutlet weak var maxTemperatureLabel: UILabel!
+    @IBOutlet weak var weatherDescriptionLabel: UILabel!
+    
+    @IBOutlet weak var sunriseLabel: UILabel!
+    @IBOutlet weak var sunsetLabel: UILabel!
+    
+    @IBOutlet weak var pressureLabel: UILabel!
+    @IBOutlet weak var humidityLabel: UILabel!
+    @IBOutlet weak var cloudsLabel: UILabel!
+    @IBOutlet weak var rainLabel: UILabel!
+    
+    @IBOutlet weak var forecastsCollectionView: UICollectionView!
+    
+    // MARK: -
+    
     let ws = OpenWeatherWebService(configuration: .default)
     
     var forecast: Forecast? {
