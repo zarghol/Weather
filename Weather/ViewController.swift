@@ -35,7 +35,42 @@ class ViewController: UIViewController {
     
     var forecast: Forecast? {
         didSet {
-            print("data : \(forecast?.conditions.first!.title)")
+            guard let forecast = forecast else {
+                // TODO: display an alert
+                return
+            }
+            print("data : \(forecast.conditions.first!.title)")
+            
+            let temperatureFormatter = MeasurementFormatter()
+            temperatureFormatter.unitOptions = .temperatureWithoutUnit
+            DispatchQueue.main.async {
+                self.currentTemperatureLabel.text = temperatureFormatter.string(from: forecast.temperature)
+                self.minTemperatureLabel.text = temperatureFormatter.string(from: forecast.temperatureMinimum)
+                self.maxTemperatureLabel.text = temperatureFormatter.string(from: forecast.temperatureMaximum)
+                self.weatherDescriptionLabel.text = forecast.conditions.first?.description
+                
+                let hourFormatter = DateFormatter()
+                hourFormatter.dateStyle = .none
+                hourFormatter.timeStyle = .short
+                if let sunrise = forecast.sunrise {
+                    self.sunriseLabel.text = hourFormatter.string(from: sunrise)
+                }
+                if let sunset = forecast.sunset {
+                    self.sunsetLabel.text = hourFormatter.string(from: sunset)
+                }
+                let normalMeasureFormatter = MeasurementFormatter()
+                self.pressureLabel.text = "Pressure : \(normalMeasureFormatter.string(from: forecast.pressure))"
+                
+                self.humidityLabel.text = "Humidity : \(forecast.humidity) %"
+                
+                self.cloudsLabel.text = "Clouds : \(forecast.clouds) %"
+                
+                if let rainVolume = forecast.rainVolume {
+                    self.rainLabel.text = "Rain : \(normalMeasureFormatter.string(from: rainVolume))"
+                } else {
+                    self.rainLabel.text = "Rain : no data"
+                }
+            }
         }
     }
 
