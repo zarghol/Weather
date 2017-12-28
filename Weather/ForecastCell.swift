@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ForecastCell: UICollectionViewCell {
+class ForecastCell: UITableViewCell {
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var minLabel: UILabel!
     @IBOutlet weak var maxLabel: UILabel!

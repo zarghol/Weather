@@ -31,7 +31,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var cloudsLabel: UILabel!
     @IBOutlet weak var rainLabel: UILabel!
     
-    @IBOutlet weak var forecastsCollectionView: UICollectionView!
+    @IBOutlet weak var forecastsTableView: UITableView!
+//    @IBOutlet weak var forecastsCollectionView: UICollectionView!
     
     let temperatureFormatter: MeasurementFormatter = {
         let temperatureFormatter = MeasurementFormatter()
@@ -99,21 +100,23 @@ class ViewController: UIViewController {
                 self.sunSeparator.backgroundColor = type.thirdColor
                 self.sunsetImageView.tintColor = type.thirdColor
                 self.sunriseImageView.tintColor = type.thirdColor
+                
+                self.forecastsTableView.separatorColor = type.thirdColor
             }
         }
     }
     
     var nextForecasts = [Forecast]() {
         didSet {
-            DispatchQueue.main.async {
-                self.forecastsCollectionView.reloadData()
+            DispatchQueue.main.async { [unowned self] in
+                self.forecastsTableView.reloadData()
             }
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        forecastsCollectionView.dataSource = self
+        forecastsTableView.dataSource = self
         
         self.ws.getCurrentData { [weak self] result in
             switch result {
@@ -138,29 +141,59 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.nextForecasts.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let dequeuedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "forecastCell", for: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: "forecastCell", for: indexPath)
         guard let cell = dequeuedCell as? ForecastCell else {
             return dequeuedCell
         }
         let data = nextForecasts[indexPath.row]
         let type = data.conditions.first?.type ?? .other
-        
+        let textColor = (self.forecast?.conditions.first?.type ?? .other).textColor
         let dayFormatter = DateFormatter()
-        dayFormatter.timeStyle = .short
+        dayFormatter.dateFormat = "HH 'h'"
         cell.dayLabel.text = dayFormatter.string(from: data.date)
-        cell.dayLabel.textColor = type.textColor
+        cell.dayLabel.textColor = textColor
         cell.minLabel.text = temperatureFormatter.string(from: data.temperatureMinimum)
-        cell.minLabel.textColor = type.textColor
+        cell.minLabel.textColor = textColor
         cell.maxLabel.text = temperatureFormatter.string(from: data.temperatureMaximum)
-        cell.maxLabel.textColor = type.textColor
-        cell.backgroundColor = type.backgroundColor
+        cell.maxLabel.textColor = textColor
+        cell.backgroundColor = type.backgroundColor.withAlphaComponent(0.3)
         
         return cell
     }
+    
+    
 }
+
+//extension ViewController: UICollectionViewDataSource {
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        return self.nextForecasts.count
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let dequeuedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "forecastCell", for: indexPath)
+//        guard let cell = dequeuedCell as? ForecastCell else {
+//            return dequeuedCell
+//        }
+//        let data = nextForecasts[indexPath.row]
+//        let type = data.conditions.first?.type ?? .other
+//
+//        let dayFormatter = DateFormatter()
+//        dayFormatter.timeStyle = .short
+//        cell.dayLabel.text = dayFormatter.string(from: data.date)
+//        cell.dayLabel.textColor = type.textColor
+//        cell.minLabel.text = temperatureFormatter.string(from: data.temperatureMinimum)
+//        cell.minLabel.textColor = type.textColor
+//        cell.maxLabel.text = temperatureFormatter.string(from: data.temperatureMaximum)
+//        cell.maxLabel.textColor = type.textColor
+//        cell.backgroundColor = type.backgroundColor
+//
+//        return cell
+//    }
+//}
+
