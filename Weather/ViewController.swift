@@ -32,27 +32,26 @@ class ViewController: UIViewController {
     @IBOutlet weak var rainLabel: UILabel!
     
     @IBOutlet weak var forecastsTableView: UITableView!
-//    @IBOutlet weak var forecastsCollectionView: UICollectionView!
+    
+    // MARK: -
     
     let temperatureFormatter: MeasurementFormatter = {
         let temperatureFormatter = MeasurementFormatter()
         temperatureFormatter.unitOptions = .temperatureWithoutUnit
         let numberFormatter = NumberFormatter()
         numberFormatter.minimumFractionDigits = 0
-        numberFormatter.maximumFractionDigits = 1
+        numberFormatter.maximumFractionDigits = 0
         numberFormatter.minimumIntegerDigits = 1
         temperatureFormatter.numberFormatter = numberFormatter
         return temperatureFormatter
     }()
-    
-    // MARK: -
     
     let ws = OpenWeatherWebService(configuration: .default)
     
     var forecast: Forecast? {
         didSet {
             guard let forecast = forecast else {
-                self.cityButton.setTitle("Choose a city", for: .normal)
+                self.cityButton.setTitle(NSLocalizedString("Choose a city", comment: ""), for: .normal)
                 return
             }
             
@@ -61,7 +60,7 @@ class ViewController: UIViewController {
 
                 self.view.backgroundColor = type.backgroundColor
                 self.cityButton.setTitle(forecast.city, for: .normal)
-                self.cityButton.tintColor = type.thirdColor
+                self.cityButton.tintColor = type.textColor
                 self.currentTemperatureLabel.text = self.temperatureFormatter.string(from: forecast.temperature)
                 self.currentTemperatureLabel.textColor = type.textColor
                 self.minTemperatureLabel.text = self.temperatureFormatter.string(from: forecast.temperatureMinimum)
@@ -83,16 +82,17 @@ class ViewController: UIViewController {
                     self.sunsetLabel.textColor = type.textColor
                 }
                 let normalMeasureFormatter = MeasurementFormatter()
-                self.pressureLabel.text = "Pressure : \(normalMeasureFormatter.string(from: forecast.pressure))"
+                
+                self.pressureLabel.text = "\(NSLocalizedString("Pressure", comment: "")) : \(normalMeasureFormatter.string(from: forecast.pressure))"
                 self.pressureLabel.textColor = type.textColor
-                self.humidityLabel.text = "Humidity : \(forecast.humidity) %"
+                self.humidityLabel.text = "\(NSLocalizedString("Humidity", comment: "")) : \(forecast.humidity) %"
                 self.humidityLabel.textColor = type.textColor
-                self.cloudsLabel.text = "Clouds : \(forecast.clouds) %"
+                self.cloudsLabel.text = "\(NSLocalizedString("Clouds", comment: "")) : \(forecast.clouds) %"
                 self.cloudsLabel.textColor = type.textColor
                 if let rainVolume = forecast.rainVolume {
-                    self.rainLabel.text = "Rain : \(normalMeasureFormatter.string(from: rainVolume))"
+                    self.rainLabel.text = "\(NSLocalizedString("Rain", comment: "")) : \(normalMeasureFormatter.string(from: rainVolume))"
                 } else {
-                    self.rainLabel.text = "Rain : no data"
+                    self.rainLabel.text = "\(NSLocalizedString("Rain", comment: "")) : \(NSLocalizedString("no data", comment: ""))"
                 }
                 self.rainLabel.textColor = type.textColor
                 
@@ -128,11 +128,11 @@ class ViewController: UIViewController {
             }
         }
         
-        let numberOfDays = 12
-        self.ws.getForecasts(days: numberOfDays) { result in
+//        let numberOfForecast = 16 // 2 days
+        self.ws.getForecasts { result in
             switch result {
             case .error(let error):
-                print("unable to get forecast on \(numberOfDays) days : \(error)")
+                print("unable to get forecasts")
                 
             case .success(let forecasts):
                 self.nextForecasts = forecasts

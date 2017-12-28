@@ -1,0 +1,42 @@
+
+/* Class = "UIButton"; normalTitle = "Lyon"; ObjectID = "1kN-gT-u3h"; */
+"1kN-gT-u3h.normalTitle" = "Lyon";
+
+/* Class = "UILabel"; text = "Description"; ObjectID = "8ab-jY-X67"; */
+"8ab-jY-X67.text" = "Description";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Akp-0g-CWA"; */
+"Akp-0g-CWA.text" = "Label";
+
+/* Class = "UILabel"; text = "7°"; ObjectID = "MGu-rf-paG"; */
+"MGu-rf-paG.text" = "7°";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Sdy-2e-YZQ"; */
+"Sdy-2e-YZQ.text" = "Label";
+
+/* Class = "UILabel"; text = "07:30"; ObjectID = "TaE-8y-kf6"; */
+"TaE-8y-kf6.text" = "07:30";
+
+/* Class = "UILabel"; text = "20:30"; ObjectID = "cak-zM-sFc"; */
+"cak-zM-sFc.text" = "20:30";
+
+/* Class = "UILabel"; text = "Pression : 1010 hPa"; ObjectID = "cfm-6i-2TN"; */
+"cfm-6i-2TN.text" = "Pression : 1010 hPa";
+
+/* Class = "UILabel"; text = "Rain : 0 mm"; ObjectID = "eoE-uT-hEv"; */
+"eoE-uT-hEv.text" = "Rain : 0 mm";
+
+/* Class = "UILabel"; text = "Clouds : 0 %"; ObjectID = "f4p-2e-GM4"; */
+"f4p-2e-GM4.text" = "Clouds : 0 %";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "izs-eV-DmU"; */
+"izs-eV-DmU.text" = "Label";
+
+/* Class = "UILabel"; text = "21°"; ObjectID = "uLt-Ne-gcw"; */
+"uLt-Ne-gcw.text" = "21°";
+
+/* Class = "UILabel"; text = "Humidity : 80 %"; ObjectID = "uga-mg-SnT"; */
+"uga-mg-SnT.text" = "Humidity : 80 %";
+
+/* Class = "UILabel"; text = "14°"; ObjectID = "xGj-bL-nQ9"; */
+"xGj-bL-nQ9.text" = "14°";
