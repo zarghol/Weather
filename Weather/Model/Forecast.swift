@@ -18,7 +18,7 @@ struct Forecast {
     let temperatureMaximum: Measurement<UnitTemperature>
     
     let visibility: Int?
-    let wind: WindCondition
+//    let wind: WindCondition
     let clouds: Double
     let date: Date
     
@@ -46,8 +46,8 @@ struct WeatherCondition: Decodable {
 }
 
 struct WindCondition: Codable {
-    let speed: Double
-    let degrees: Double
+    let speed: Double?
+    let degrees: Double?
     
     enum CodingKeys: String, CodingKey {
         case speed

@@ -62,7 +62,7 @@ extension Forecast: Decodable {
                                                           unit: .celsius)
         
         visibility = try values.decodeIfPresent(Int.self, forKey: .visibility)
-        wind = try values.decode(WindCondition.self, forKey: .wind)
+//        wind = try values.decodeIfPresent(WindCondition.self, forKey: .wind)
         
         let cloudsStructure = try values.nestedContainer(keyedBy: CloudsCodingKeys.self, forKey: .clouds)
         clouds = try cloudsStructure.decode(Double.self, forKey: .all)
