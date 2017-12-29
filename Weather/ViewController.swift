@@ -128,7 +128,6 @@ class ViewController: UIViewController {
             }
         }
         
-//        let numberOfForecast = 16 // 2 days
         self.ws.getForecasts { result in
             switch result {
             case .error(let error):
@@ -143,7 +142,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.nextForecasts.count
+        return nextForecasts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -166,34 +165,4 @@ extension ViewController: UITableViewDataSource {
         
         return cell
     }
-    
-    
 }
-
-//extension ViewController: UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return self.nextForecasts.count
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let dequeuedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "forecastCell", for: indexPath)
-//        guard let cell = dequeuedCell as? ForecastCell else {
-//            return dequeuedCell
-//        }
-//        let data = nextForecasts[indexPath.row]
-//        let type = data.conditions.first?.type ?? .other
-//
-//        let dayFormatter = DateFormatter()
-//        dayFormatter.timeStyle = .short
-//        cell.dayLabel.text = dayFormatter.string(from: data.date)
-//        cell.dayLabel.textColor = type.textColor
-//        cell.minLabel.text = temperatureFormatter.string(from: data.temperatureMinimum)
-//        cell.minLabel.textColor = type.textColor
-//        cell.maxLabel.text = temperatureFormatter.string(from: data.temperatureMaximum)
-//        cell.maxLabel.textColor = type.textColor
-//        cell.backgroundColor = type.backgroundColor
-//
-//        return cell
-//    }
-//}
-
