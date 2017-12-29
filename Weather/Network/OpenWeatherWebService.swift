@@ -66,8 +66,14 @@ class OpenWeatherWebService: BaseWebService, WebDataService {
         })
     }
     
-    func getForecasts(days: Int, completion: @escaping (WSResult<[Forecast]>) -> Void) {
-        guard let url = try? self.buildURL(pathComponent: "/forecast", additionalQueryItems: [URLQueryItem(name: "cnt", value: "\(days)")]) else {
+    func getForecasts(forecastsNumber: Int? = nil, completion: @escaping (WSResult<[Forecast]>) -> Void) {
+        let additionalInfos: [URLQueryItem]
+        if let forecastsNumber = forecastsNumber {
+            additionalInfos = [URLQueryItem(name: "cnt", value: "\(forecastsNumber)")]
+        } else {
+            additionalInfos = []
+        }
+        guard let url = try? self.buildURL(pathComponent: "/forecast", additionalQueryItems: additionalInfos) else {
             completion(.error(OpenWeatherError.urlUnavailable))
             return
         }

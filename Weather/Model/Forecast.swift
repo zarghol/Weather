@@ -11,40 +11,43 @@ import Foundation
 struct Forecast {
     let conditions: [WeatherCondition]
     
-    let temperature: Double
-    let pressure: Double
+    let temperature: Measurement<UnitTemperature>
+    let pressure: Measurement<UnitPressure>
     let humidity: Double
-    let temperatureMinimum: Double
-    let temperatureMaximum: Double
+    let temperatureMinimum: Measurement<UnitTemperature>
+    let temperatureMaximum: Measurement<UnitTemperature>
     
     let visibility: Int?
-    let wind: WindCondition
+//    let wind: WindCondition
     let clouds: Double
     let date: Date
+    
+    let city: String?
 
-    let rainVolume: Double?
-    let snowVolume: Double?
+    let rainVolume: Measurement<UnitLength>?
+    let snowVolume: Measurement<UnitLength>?
     
     let sunrise: Date?
     let sunset: Date?
 }
 
-struct WeatherCondition: Codable {
-    let weatherId: Int
+
+struct WeatherCondition: Decodable {
+    let type: WeatherType
     let title: String
     let description: String
     let icon: String
     
     enum CodingKeys: String, CodingKey {
-        case weatherId = "id"
+        case type = "id"
         case title = "main"
         case description, icon
     }
 }
 
 struct WindCondition: Codable {
-    let speed: Double
-    let degrees: Double
+    let speed: Double?
+    let degrees: Double?
     
     enum CodingKeys: String, CodingKey {
         case speed

@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  Weather
+
+  Created by Clément NONN on 28/12/2017.
+  Copyright © 2017 Clément NONN. All rights reserved.
+*/
+
+"Choose a city" = "Choisi une ville";
+"Pressure" = "Pression";
+"Humidity" = "Humidité";
+"Clouds" = "Nuages";
+"Rain" = "Pluie";
+"no data" = "aucune données";

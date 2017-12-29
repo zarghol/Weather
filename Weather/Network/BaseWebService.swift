@@ -338,7 +338,7 @@ class BaseWebService: NSObject, WebService {
     internal lazy var session: URLSession = {
         let conf = URLSessionConfiguration.default
         
-        conf.waitsForConnectivity = true
+//        conf.waitsForConnectivity = true
         conf.timeoutIntervalForResource = 30.0
         
         return URLSession(configuration: conf)//, delegate: self, delegateQueue: nil)

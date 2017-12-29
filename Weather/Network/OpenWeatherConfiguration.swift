@@ -18,9 +18,10 @@ enum OpenWeatherUnit: String {
 }
 
 struct OpenWeatherConfiguration {
-    let location: OpenWeatherLocation
-    let unit: OpenWeatherUnit
+    var location: OpenWeatherLocation
+    var unit: OpenWeatherUnit
     let apiKey: String
+    var language: String
 }
 
 // MARK: - Allow to add the configuration to query of the url
@@ -41,6 +42,7 @@ extension OpenWeatherConfiguration {
     var queryItems: [URLQueryItem] {
         let units = URLQueryItem(name: "units", value: unit.rawValue)
         let key = URLQueryItem(name: "appid", value: apiKey)
-        return [self.location.queryItem, units, key]
+        let lang = URLQueryItem(name: "lang", value: language)
+        return [self.location.queryItem, units, key, lang]
     }
 }
