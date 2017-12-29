@@ -12,6 +12,8 @@ class ViewController: UIViewController {
     
     // MARK: - Outlets
     
+    @IBOutlet weak var minorErrorLabel: UILabel!
+    @IBOutlet weak var majorErrorLabel: UILabel!
     @IBOutlet weak var cityButton: UIButton!
     @IBOutlet weak var sunSeparator: UIView!
     @IBOutlet weak var sunsetImageView: UIImageView!
@@ -113,6 +115,43 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    var error: Error? {
+        didSet {
+            DispatchQueue.main.async { [unowned self] in
+                if let error = self.error {
+                    let labelToUse = self.forecast == nil ? self.majorErrorLabel : self.minorErrorLabel
+                    let text = self.forecast == nil ? "Ooops ! Something went wrong ! 😵\n\(error.localizedDescription)" : "Something went wrong : data not refreshed"
+                    labelToUse?.text = text
+                    labelToUse?.isHidden = false
+                    self.changeVisibilityDatas(true, animate: false)
+                } else {
+                    self.minorErrorLabel.isHidden = true
+                    self.majorErrorLabel.isHidden = true
+                    self.changeVisibilityDatas(false, animate: true)
+                }
+            }
+        }
+    }
+    
+    func changeVisibilityDatas(_ isHidden: Bool, animate: Bool) {
+        let views = [self.currentTemperatureLabel, self.minTemperatureLabel, self.maxTemperatureLabel, self.weatherDescriptionLabel, self.sunriseImageView, self.sunriseLabel, self.sunSeparator, self.sunsetLabel, self.sunsetImageView, self.pressureLabel, self.cloudsLabel, self.humidityLabel, self.rainLabel, self.separator, self.forecastsTableView]
+        
+        for view in views {
+            if animate {
+                view?.alpha = isHidden ? 1.0 : 0.0
+                view?.isHidden = false
+                UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: [], animations: {
+                    view?.alpha = isHidden ? 0.0 : 1.0
+                }, completion: { (_) in
+                    view?.isHidden = isHidden
+                    view?.alpha = 1.0
+                })
+            } else {
+                view?.isHidden = isHidden
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,20 +160,22 @@ class ViewController: UIViewController {
         self.ws.getCurrentData { [weak self] result in
             switch result {
             case .error(let error):
-                print("unable to get forecast : \(error)")
+                self?.error = error
                 
             case .success(let forecast):
+                self?.error = nil
                 self?.forecast = forecast
             }
         }
         
-        self.ws.getForecasts { result in
+        self.ws.getForecasts { [weak self] result in
             switch result {
             case .error(let error):
-                print("unable to get forecasts")
+                self?.error = error
                 
             case .success(let forecasts):
-                self.nextForecasts = forecasts
+                self?.error = nil
+                self?.nextForecasts = forecasts
             }
         }
     }
