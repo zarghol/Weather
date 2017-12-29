@@ -15,10 +15,10 @@ class ViewController: UIViewController {
     @IBOutlet weak var minorErrorLabel: UILabel!
     @IBOutlet weak var majorErrorLabel: UILabel!
     @IBOutlet weak var cityButton: UIButton!
-    @IBOutlet weak var sunSeparator: UIView!
+    @IBOutlet weak var sunSeparator: LineView!
     @IBOutlet weak var sunsetImageView: UIImageView!
     @IBOutlet weak var sunriseImageView: UIImageView!
-    @IBOutlet weak var separator: UIView!
+    @IBOutlet weak var separator: LineView!
     
     @IBOutlet weak var currentTemperatureLabel: UILabel!
     @IBOutlet weak var minTemperatureLabel: UILabel!
@@ -59,8 +59,7 @@ class ViewController: UIViewController {
             
             DispatchQueue.main.async {
                 let type = forecast.conditions.first?.type ?? WeatherType.other
-
-                self.view.backgroundColor = type.backgroundColor
+                
                 self.cityButton.setTitle(forecast.city, for: .normal)
                 self.cityButton.tintColor = type.textColor
                 self.currentTemperatureLabel.text = self.temperatureFormatter.string(from: forecast.temperature)
@@ -98,12 +97,19 @@ class ViewController: UIViewController {
                 }
                 self.rainLabel.textColor = type.textColor
                 
-                self.separator.backgroundColor = type.thirdColor
-                self.sunSeparator.backgroundColor = type.thirdColor
+                self.separator.lineColor = type.thirdColor
+                self.sunSeparator.lineColor = type.thirdColor
                 self.sunsetImageView.tintColor = type.thirdColor
                 self.sunriseImageView.tintColor = type.thirdColor
                 
                 self.forecastsTableView.separatorColor = type.thirdColor
+                
+                if self.alreadyFirstAnimate {
+                    self.changeVisibilityDatas(false, animate: true)
+                } else {
+                    self.animateFirst()
+                }
+                
             }
         }
     }
@@ -135,35 +141,162 @@ class ViewController: UIViewController {
     }
     
     func changeVisibilityDatas(_ isHidden: Bool, animate: Bool) {
-        let views = [self.currentTemperatureLabel, self.minTemperatureLabel, self.maxTemperatureLabel, self.weatherDescriptionLabel, self.sunriseImageView, self.sunriseLabel, self.sunSeparator, self.sunsetLabel, self.sunsetImageView, self.pressureLabel, self.cloudsLabel, self.humidityLabel, self.rainLabel, self.separator, self.forecastsTableView]
+        guard self.currentTemperatureLabel.isHidden != isHidden else {
+            return
+        }
+        
+        let views: [UIView] = [self.currentTemperatureLabel, self.minTemperatureLabel, self.maxTemperatureLabel, self.weatherDescriptionLabel, self.sunriseImageView, self.sunriseLabel, self.sunSeparator, self.sunsetLabel, self.sunsetImageView, self.pressureLabel, self.cloudsLabel, self.humidityLabel, self.rainLabel, self.separator, self.forecastsTableView]
         
         for view in views {
             if animate {
-                view?.alpha = isHidden ? 1.0 : 0.0
-                view?.isHidden = false
-                UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: [], animations: {
-                    view?.alpha = isHidden ? 0.0 : 1.0
+                view.alpha = isHidden ? 1.0 : 0.0
+                view.isHidden = false
+                
+                UIView.animate(withDuration: 1.0, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: [], animations: {
+                    view.alpha = isHidden ? 0.0 : 1.0
                 }, completion: { (_) in
-                    view?.isHidden = isHidden
-                    view?.alpha = 1.0
+                    view.isHidden = isHidden
+                    view.alpha = 1.0
                 })
             } else {
-                view?.isHidden = isHidden
+                view.isHidden = isHidden
             }
         }
     }
+    
+    var alreadyFirstAnimate = false
+    
+    func animateFirst() {
+        guard !alreadyFirstAnimate else {
+            return
+        }
+        alreadyFirstAnimate = true
+        
+        self.changeVisibilityDatas(true, animate: false)
+        
+        self.currentTemperatureLabel.transform = CGAffineTransform(translationX: 0.0, y: 10.0)
+        self.currentTemperatureLabel.alpha = 0.0
+        self.currentTemperatureLabel.isHidden = false
+        
+        self.minTemperatureLabel.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
+        self.minTemperatureLabel.alpha = 0.0
+        self.minTemperatureLabel.isHidden = false
+        self.maxTemperatureLabel.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
+        self.maxTemperatureLabel.alpha = 0.0
+        self.maxTemperatureLabel.isHidden = false
+        
+        self.weatherDescriptionLabel.alpha = 0.0
+        self.weatherDescriptionLabel.isHidden = false
+        
+        self.sunSeparator.lineLayer.strokeStart = 0.5
+        self.sunSeparator.lineLayer.strokeEnd = 0.5
+        self.sunSeparator.isHidden = false
+        
+        self.sunriseLabel.alpha = 0.0
+        self.sunriseLabel.isHidden = false
+        self.sunriseImageView.alpha = 0.0
+        self.sunriseImageView.isHidden = false
+        
+        self.sunsetLabel.alpha = 0.0
+        self.sunsetLabel.isHidden = false
+        self.sunsetImageView.alpha = 0.0
+        self.sunsetImageView.isHidden = false
+        
+        self.pressureLabel.alpha = 0.0
+        self.pressureLabel.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
+        self.pressureLabel.isHidden = false
+        
+        self.cloudsLabel.alpha = 0.0
+        self.cloudsLabel.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
+        self.cloudsLabel.isHidden = false
+        
+        self.humidityLabel.alpha = 0.0
+        self.humidityLabel.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
+        self.humidityLabel.isHidden = false
+        
+        self.rainLabel.alpha = 0.0
+        self.rainLabel.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
+        self.rainLabel.isHidden = false
+        
+        self.separator.lineLayer.strokeStart = 0.5
+        self.separator.lineLayer.strokeEnd = 0.5
+        self.separator.isHidden = false
+        
+        self.forecastsTableView.alpha = 0.0
+        self.forecastsTableView.isHidden = false
+        
+        let backgroundColor = self.forecast?.conditions.first?.type.backgroundColor
+
+        UIView.animateAndChain(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: [], animations: {
+            if let backgroundColor = backgroundColor {
+                self.view.backgroundColor = backgroundColor
+            }
+            self.currentTemperatureLabel.alpha = 1.0
+            self.currentTemperatureLabel.transform = .identity
+
+            self.minTemperatureLabel.alpha = 1.0
+            self.minTemperatureLabel.transform = .identity
+            self.maxTemperatureLabel.alpha = 1.0
+            self.maxTemperatureLabel.transform = .identity
+        }, completion: nil).animate(withDuration: 0.2, delay: 0.15, options: [], animations: {
+            self.weatherDescriptionLabel.alpha = 1.0
+        }, completion: nil).animate(withDuration: 0.2, delay: 0.1, options: [], animations: {
+            self.sunSeparator.lineLayer.strokeStart = 0.0
+            self.sunSeparator.lineLayer.strokeEnd = 1.0
+            
+            self.separator.lineLayer.strokeStart = 0.0
+            self.separator.lineLayer.strokeEnd = 1.0
+        }, completion: nil).animate(withDuration: 0.2, delay: 0.1, options: [], animations: {
+            self.sunriseLabel.alpha = 1.0
+            self.sunriseImageView.alpha = 1.0
+            self.sunsetLabel.alpha = 1.0
+            self.sunsetImageView.alpha = 1.0
+        }, completion: nil).animate(withDuration: 0.2, delay: 0.1, options: [], animations: {
+            self.pressureLabel.alpha = 1.0
+            self.pressureLabel.transform = .identity
+            self.cloudsLabel.alpha = 1.0
+            self.cloudsLabel.transform = .identity
+            
+            self.humidityLabel.alpha = 1.0
+            self.humidityLabel.transform = .identity
+            self.rainLabel.alpha = 1.0
+            self.rainLabel.transform = .identity
+        }, completion: nil).animate(withDuration: 0.4) {
+            self.forecastsTableView.alpha = 1.0
+        }
+    }
+    
+    @IBAction func restartAnim() {
+        alreadyFirstAnimate = false
+        self.animateFirst()
+    }
+    
+    var timer: Timer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         forecastsTableView.dataSource = self
+        self.changeVisibilityDatas(true, animate: false)
         
+        self.fetchData()
+        
+        timer = Timer(timeInterval: 60, target: self, selector: #selector(fetchData), userInfo: nil, repeats: true)
+        
+        RunLoop.current.add(timer, forMode: .defaultRunLoopMode)
+    }
+    
+    @objc func fetchData() {
+        print("timer")
         self.ws.getCurrentData { [weak self] result in
             switch result {
             case .error(let error):
                 self?.error = error
                 
             case .success(let forecast):
-                self?.error = nil
+                if self?.error != nil {
+                    self?.error = nil
+                }
+                print("data updated")
                 self?.forecast = forecast
             }
         }
@@ -174,8 +307,10 @@ class ViewController: UIViewController {
                 self?.error = error
                 
             case .success(let forecasts):
-                self?.error = nil
-                self?.nextForecasts = forecasts
+                if self?.error != nil {
+                    self?.error = nil
+                }
+                self?.nextForecasts = forecasts.sorted { $0.date < $1.date }
             }
         }
     }
