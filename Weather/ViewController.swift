@@ -76,12 +76,18 @@ class ViewController: UIViewController {
                 hourFormatter.timeStyle = .short
                 if let sunrise = forecast.sunrise {
                     self.sunriseLabel.text = hourFormatter.string(from: sunrise)
-                    self.sunriseLabel.textColor = type.textColor
+                } else {
+                    self.sunriseLabel.text = NSLocalizedString("no data", comment: "")
                 }
+                self.sunriseLabel.textColor = type.textColor
+                
                 if let sunset = forecast.sunset {
                     self.sunsetLabel.text = hourFormatter.string(from: sunset)
-                    self.sunsetLabel.textColor = type.textColor
+                } else {
+                    self.sunsetLabel.text = NSLocalizedString("no data", comment: "")
                 }
+                self.sunsetLabel.textColor = type.textColor
+                
                 let normalMeasureFormatter = MeasurementFormatter()
                 
                 self.pressureLabel.text = "\(NSLocalizedString("Pressure", comment: "")) : \(normalMeasureFormatter.string(from: forecast.pressure))"
