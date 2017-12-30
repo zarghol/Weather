@@ -8,6 +8,13 @@
 
 import Foundation
 
+protocol OpenWeatherService {
+    var configuration: OpenWeatherConfiguration { get set }
+    
+    func getCurrentData(completion: @escaping (WSResult<Forecast>) -> Void)
+    func getForecasts(forecastsNumber: Int?, completion: @escaping (WSResult<[Forecast]>) -> Void)
+}
+
 enum OpenWeatherError: Error {
     case unableToBuildURLComponent
     case unableToBuildURLFromComponent
@@ -94,6 +101,9 @@ class OpenWeatherWebService: BaseWebService, WebDataService {
         })
     }
 }
+
+extension OpenWeatherWebService: OpenWeatherService { }
+
 
 fileprivate struct MultipleForecast: Decodable {
     let list: [Forecast]

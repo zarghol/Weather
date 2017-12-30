@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1801C5591FF80507002C696D /* MockUpService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1801C5581FF80507002C696D /* MockUpService.swift */; };
 		1872533B1FF2895700CECD5B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872533A1FF2895700CECD5B /* AppDelegate.swift */; };
 		1872533D1FF2895700CECD5B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872533C1FF2895700CECD5B /* ViewController.swift */; };
 		187253401FF2895700CECD5B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1872533E1FF2895700CECD5B /* Main.storyboard */; };
@@ -51,6 +52,7 @@
 
 /* Begin PBXFileReference section */
 		0E3CBE403284D8209DE272C8 /* Pods_Weather.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Weather.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1801C5581FF80507002C696D /* MockUpService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUpService.swift; sourceTree = "<group>"; };
 		187253371FF2895700CECD5B /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1872533A1FF2895700CECD5B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1872533C1FF2895700CECD5B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				18C47BF61FF2B34F00D2FCB3 /* OpenWeatherWebService.swift */,
 				18C47BF81FF2BCA300D2FCB3 /* OpenWeatherConfiguration.swift */,
 				18C47BFA1FF2BDD600D2FCB3 /* OpenWeatherConfiguration+Default.swift */,
+				1801C5581FF80507002C696D /* MockUpService.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -535,6 +538,7 @@
 				18C2B5D51FF5821F0028AF24 /* RadiusButton.swift in Sources */,
 				18C47BFD1FF40D7800D2FCB3 /* ForecastCell.swift in Sources */,
 				18C47BED1FF28B8400D2FCB3 /* Forecast.swift in Sources */,
+				1801C5591FF80507002C696D /* MockUpService.swift in Sources */,
 				18C47BF71FF2B34F00D2FCB3 /* OpenWeatherWebService.swift in Sources */,
 				18C47BF51FF2AD9A00D2FCB3 /* BaseWebService.swift in Sources */,
 				1872533B1FF2895700CECD5B /* AppDelegate.swift in Sources */,

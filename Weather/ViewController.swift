@@ -48,7 +48,7 @@ class ViewController: UIViewController {
         return temperatureFormatter
     }()
     
-    let ws = OpenWeatherWebService(configuration: .default)
+    let ws: OpenWeatherService = MockupService(conf: .default) //OpenWeatherWebService(configuration: .default)
     
     var forecast: Forecast? {
         didSet {
@@ -301,7 +301,7 @@ class ViewController: UIViewController {
             }
         }
         
-        self.ws.getForecasts { [weak self] result in
+        self.ws.getForecasts(forecastsNumber: nil) { [weak self] result in
             switch result {
             case .error(let error):
                 self?.error = error
