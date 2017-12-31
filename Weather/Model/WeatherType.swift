@@ -59,6 +59,20 @@ enum WeatherType: Decodable {
     }
 }
 
+extension WeatherType: Equatable {
+    static func ==(lhs: WeatherType, rhs: WeatherType) -> Bool {
+        switch (lhs, rhs) {
+        case (.thunderstorm, .thunderstorm), (.drizzle, .drizzle), (.rain, .rain), (.snow, .snow), (.atmosphere, .atmosphere), (.clear, .clear), (.clouds(.low), .clouds(.low)), (.clouds(.medium), .clouds(.medium)), (.clouds(.large), .clouds(.large)), (.other, .other):
+            return true
+
+        default:
+            return false
+        }
+    }
+    
+    
+}
+
 enum WeatherTypeError: Error {
     case invalidCode(Int)
 }
