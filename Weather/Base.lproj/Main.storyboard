@@ -25,7 +25,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ANb-16-cRC">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ANb-16-cRC" customClass="WeatherAnimationView" customModule="Weather" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="72"/>
                                 <subviews>
                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Error" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="baE-sk-ige">
@@ -112,7 +112,7 @@
                                     <constraint firstAttribute="width" secondItem="qjA-tQ-d9A" secondAttribute="height" multiplier="1:1" id="PSm-gj-6Mt"/>
                                 </constraints>
                             </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eh7-00-zwy" customClass="LineView" customModule="Weather" customModuleProvider="target">
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eh7-00-zwy" customClass="LineView" customModule="Weather" customModuleProvider="target">
                                 <rect key="frame" x="104" y="197" width="112" height="1"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -271,6 +271,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="animationView" destination="ANb-16-cRC" id="gGI-aB-0H1"/>
                         <outlet property="cityButton" destination="1kN-gT-u3h" id="pFX-ag-f0Q"/>
                         <outlet property="cloudsLabel" destination="f4p-2e-GM4" id="q0X-ky-wza"/>
                         <outlet property="currentTemperatureLabel" destination="xGj-bL-nQ9" id="I51-J1-Ehz"/>

@@ -35,6 +35,8 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var forecastsTableView: UITableView!
     
+    @IBOutlet weak var animationView: WeatherAnimationView!
+    
     // MARK: -
     
     let temperatureFormatter: MeasurementFormatter = {
@@ -48,7 +50,7 @@ class ViewController: UIViewController {
         return temperatureFormatter
     }()
     
-    let ws: OpenWeatherService = MockupService(conf: .default) //OpenWeatherWebService(configuration: .default)
+    let ws: OpenWeatherService = MockupService(conf: .default)// OpenWeatherWebService(configuration: .default)
     
     var forecast: Forecast? {
         didSet {
@@ -115,6 +117,8 @@ class ViewController: UIViewController {
                 } else {
                     self.animateFirst()
                 }
+                
+                self.animationView.type = WeatherAnimation(weatherType: type)
                 
             }
         }
