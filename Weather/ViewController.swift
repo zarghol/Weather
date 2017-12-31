@@ -277,8 +277,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func restartAnim() {
-        alreadyFirstAnimate = false
-        self.animateFirst()
+//        alreadyFirstAnimate = false
+//        self.animateFirst()
+        self.performSegue(withIdentifier: "SearchCitySegue", sender: self)
     }
     
     var timer: Timer!
