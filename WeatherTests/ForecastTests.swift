@@ -56,16 +56,6 @@ class ForecastTests: XCTestCase {
         }
     """
     
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
     func testDecode() {
         let data = exampleJSON.data(using: .utf8)!
         let decoder = JSONDecoder()
@@ -78,19 +68,18 @@ class ForecastTests: XCTestCase {
             let condition = decoded.conditions[0]
             XCTAssertEqual(condition.title, "Clear")
             XCTAssertEqual(condition.description, "clear sky")
-            XCTAssertEqual(condition.weatherId, 800)
+
+            XCTAssertEqual(condition.type, WeatherType.clear)
             XCTAssertEqual(condition.icon, "01d")
             
-            XCTAssertEqual(decoded.temperature, 10.21)
-            XCTAssertEqual(decoded.pressure, 1011)
+            XCTAssertEqual(decoded.temperature, Measurement<UnitTemperature>(value: 10.21, unit: .celsius))
+            XCTAssertEqual(decoded.pressure, Measurement<UnitPressure>(value: 1011, unit: .hectopascals))
             XCTAssertEqual(decoded.humidity, 50)
-            XCTAssertEqual(decoded.temperatureMaximum, 12)
-            XCTAssertEqual(decoded.temperatureMinimum, 8)
+            XCTAssertEqual(decoded.temperatureMaximum, Measurement<UnitTemperature>(value: 12, unit: .celsius))
+            XCTAssertEqual(decoded.temperatureMinimum, Measurement<UnitTemperature>(value: 8, unit: .celsius))
             
             XCTAssertEqual(decoded.visibility, 10000)
             
-            XCTAssertEqual(decoded.wind.speed, 2.6)
-            XCTAssertEqual(decoded.wind.degrees, 190)
             XCTAssertEqual(decoded.clouds, 0)
 
             XCTAssertEqual(decoded.date, Date(timeIntervalSince1970: 1514295000))
@@ -99,9 +88,6 @@ class ForecastTests: XCTestCase {
         } catch {
             XCTFail("unable to decode : \(error)")
         }
-        
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
     
 }
