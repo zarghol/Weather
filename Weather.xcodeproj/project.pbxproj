@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1801C5591FF80507002C696D /* MockUpService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1801C5581FF80507002C696D /* MockUpService.swift */; };
+		1801C55B1FF822B4002C696D /* WeatherAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1801C55A1FF822B4002C696D /* WeatherAnimationView.swift */; };
+		1801C55D1FF85F51002C696D /* WeatherAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1801C55C1FF85F51002C696D /* WeatherAnimation.swift */; };
+		1801C55F1FF86089002C696D /* CAEmitterCell+Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1801C55E1FF86089002C696D /* CAEmitterCell+Cells.swift */; };
 		1872533B1FF2895700CECD5B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872533A1FF2895700CECD5B /* AppDelegate.swift */; };
 		1872533D1FF2895700CECD5B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872533C1FF2895700CECD5B /* ViewController.swift */; };
 		187253401FF2895700CECD5B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1872533E1FF2895700CECD5B /* Main.storyboard */; };
@@ -53,6 +56,9 @@
 /* Begin PBXFileReference section */
 		0E3CBE403284D8209DE272C8 /* Pods_Weather.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Weather.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1801C5581FF80507002C696D /* MockUpService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUpService.swift; sourceTree = "<group>"; };
+		1801C55A1FF822B4002C696D /* WeatherAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAnimationView.swift; sourceTree = "<group>"; };
+		1801C55C1FF85F51002C696D /* WeatherAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAnimation.swift; sourceTree = "<group>"; };
+		1801C55E1FF86089002C696D /* CAEmitterCell+Cells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAEmitterCell+Cells.swift"; sourceTree = "<group>"; };
 		187253371FF2895700CECD5B /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1872533A1FF2895700CECD5B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1872533C1FF2895700CECD5B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -206,6 +212,9 @@
 				18C2B5D41FF5821F0028AF24 /* RadiusButton.swift */,
 				18C47C001FF41B9000D2FCB3 /* WeatherType+Color.swift */,
 				18AC7B491FF69B6A00E3D810 /* LineView.swift */,
+				1801C55A1FF822B4002C696D /* WeatherAnimationView.swift */,
+				1801C55C1FF85F51002C696D /* WeatherAnimation.swift */,
+				1801C55E1FF86089002C696D /* CAEmitterCell+Cells.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -529,13 +538,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				18C47BFF1FF419D700D2FCB3 /* WeatherType.swift in Sources */,
+				1801C55D1FF85F51002C696D /* WeatherAnimation.swift in Sources */,
 				1872533D1FF2895700CECD5B /* ViewController.swift in Sources */,
 				18C47C011FF41B9000D2FCB3 /* WeatherType+Color.swift in Sources */,
 				18C47BEF1FF297D000D2FCB3 /* Forecast+Codable.swift in Sources */,
 				18AC7B4A1FF69B6A00E3D810 /* LineView.swift in Sources */,
+				1801C55F1FF86089002C696D /* CAEmitterCell+Cells.swift in Sources */,
 				18C47BF91FF2BCA300D2FCB3 /* OpenWeatherConfiguration.swift in Sources */,
 				18C47BFB1FF2BDD600D2FCB3 /* OpenWeatherConfiguration+Default.swift in Sources */,
 				18C2B5D51FF5821F0028AF24 /* RadiusButton.swift in Sources */,
+				1801C55B1FF822B4002C696D /* WeatherAnimationView.swift in Sources */,
 				18C47BFD1FF40D7800D2FCB3 /* ForecastCell.swift in Sources */,
 				18C47BED1FF28B8400D2FCB3 /* Forecast.swift in Sources */,
 				1801C5591FF80507002C696D /* MockUpService.swift in Sources */,
