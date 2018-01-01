@@ -50,7 +50,7 @@ class ViewController: UIViewController {
         return temperatureFormatter
     }()
     
-    let ws: OpenWeatherService = MockupService(conf: .default)// OpenWeatherWebService(configuration: .default)
+    var ws: OpenWeatherService = OpenWeatherWebService(configuration: .default)// MockupService(conf: .default)//
     
     var forecast: Forecast? {
         didSet {
