@@ -140,7 +140,7 @@ class ViewController: UIViewController {
                     let text = self.forecast == nil ? "Ooops ! Something went wrong ! 😵\n\(error.localizedDescription)" : "Something went wrong : data not refreshed"
                     labelToUse?.text = text
                     labelToUse?.isHidden = false
-                    self.changeVisibilityDatas(true, animate: false)
+                    self.changeVisibilityDatas(self.forecast == nil, animate: false)
                 } else {
                     self.minorErrorLabel.isHidden = true
                     self.majorErrorLabel.isHidden = true
