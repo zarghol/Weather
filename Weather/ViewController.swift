@@ -112,8 +112,16 @@ class ViewController: UIViewController {
                 
                 self.forecastsTableView.separatorColor = type.thirdColor
                 
+                // If already animate first,
+                // Change the visibility of the datas if necessary (if error before)
+                // change background color
+                // Else, we animate all together
                 if self.alreadyFirstAnimate {
                     self.changeVisibilityDatas(false, animate: true)
+                    
+                    UIView.animate(withDuration: 0.3, delay: 0.0, options: [], animations: {
+                        self.view.backgroundColor = type.backgroundColor
+                    }, completion: nil)
                 } else {
                     self.animateFirst()
                 }
