@@ -13,7 +13,7 @@ enum Intensity {
 }
 
 enum WeatherType: Decodable {
-    case thunderstorm, drizzle, rain, snow, atmosphere, clear, clouds(Intensity), other
+    case thunderstorm, drizzle, rain, snow, atmosphere, clear, clouds(Intensity), other, clearNight
     
     init(code: Int) throws {
         switch code {

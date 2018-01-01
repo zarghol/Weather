@@ -47,8 +47,17 @@ extension Forecast: Decodable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        conditions = try values.decode([WeatherCondition].self, forKey: .conditions)
+        let systemStructure = try values.nestedContainer(keyedBy: SysCodingKeys.self, forKey: .sys)
+        self.sunrise = try systemStructure.decodeIfPresent(Date.self, forKey: .sunrise)
+        self.sunset = try systemStructure.decodeIfPresent(Date.self, forKey: .sunset)
+        self.date = try values.decode(Date.self, forKey: .date)
+        var conditions = try values.decode([WeatherCondition].self, forKey: .conditions)
         
+        if let sunset = sunset, let sunrise = sunrise {
+            conditions = Forecast.checkNight(date: date, sunset: sunset, sunrise: sunrise, conditions: conditions)
+        }
+        
+        self.conditions = conditions
         let mainStructure = try values.nestedContainer(keyedBy: MainCodingKeys.self, forKey: .main)
         
         temperature = Measurement<UnitTemperature>(value: try mainStructure.decode(Double.self, forKey: .temperature),
@@ -67,7 +76,7 @@ extension Forecast: Decodable {
         let cloudsStructure = try values.nestedContainer(keyedBy: CloudsCodingKeys.self, forKey: .clouds)
         clouds = try cloudsStructure.decode(Double.self, forKey: .all)
         
-        date = try values.decode(Date.self, forKey: .date)
+        
         city = try values.decodeIfPresent(String.self, forKey: .city)
         
         if values.contains(.rain) {
@@ -91,9 +100,20 @@ extension Forecast: Decodable {
         } else {
             snowVolume = nil
         }
-        
-        let systemStructure = try values.nestedContainer(keyedBy: SysCodingKeys.self, forKey: .sys)
-        sunset = try systemStructure.decodeIfPresent(Date.self, forKey: .sunset)
-        sunrise = try systemStructure.decodeIfPresent(Date.self, forKey: .sunrise)
+    }
+    
+    private static func checkNight(date: Date, sunset: Date, sunrise: Date, conditions: [WeatherCondition]) -> [WeatherCondition] {
+        let isNight = date > sunset || date < sunrise
+        guard let condition = conditions.first, condition.type == .clear && isNight else {
+            return conditions
+        }
+        var conditions = conditions
+        conditions[0] = WeatherCondition(
+            type: .clearNight,
+            title: condition.title,
+            description: condition.description,
+            icon: condition.icon
+        )
+        return conditions
     }
 }

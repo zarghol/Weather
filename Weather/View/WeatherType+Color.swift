@@ -17,6 +17,9 @@ extension WeatherType {
         case .clear:
             return #colorLiteral(red: 0.03921568627, green: 0.6274509804, blue: 0.968627451, alpha: 1)
             
+        case .clearNight:
+            return #colorLiteral(red: 0.02352941176, green: 0.09803921569, blue: 0.2784313725, alpha: 1)
+            
         case .snow:
             return #colorLiteral(red: 0.6745098039, green: 0.7803921569, blue: 0.8823529412, alpha: 1)
             
@@ -42,6 +45,9 @@ extension WeatherType {
         case .clear:
             return #colorLiteral(red: 0.6509803922, green: 0.8705882353, blue: 1, alpha: 1)
             
+        case .clearNight:
+            return #colorLiteral(red: 0.431372549, green: 0.5843137255, blue: 0.8823529412, alpha: 1)
+            
         case .snow:
             return #colorLiteral(red: 0.1333333333, green: 0.2549019608, blue: 0.368627451, alpha: 1)
             
@@ -66,6 +72,9 @@ extension WeatherType {
             
         case .clear:
             return #colorLiteral(red: 0.9921568627, green: 0.9607843137, blue: 0.03921568627, alpha: 1)
+            
+        case .clearNight:
+            return #colorLiteral(red: 0.9058823529, green: 0.8823529412, blue: 0.8274509804, alpha: 1)
             
         case .snow:
             return #colorLiteral(red: 0.368627451, green: 0.2470588235, blue: 0.1333333333, alpha: 1)

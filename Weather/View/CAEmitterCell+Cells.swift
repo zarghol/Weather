@@ -70,6 +70,26 @@ extension CAEmitterCell {
         return [haloCell, mainCell]
     }
     
+    static var moon: CAEmitterCell {
+        let mainCell = CAEmitterCell()
+        mainCell.birthRate = 1
+        mainCell.color = #colorLiteral(red: 0.9346919656, green: 0.9558759332, blue: 1, alpha: 1).cgColor
+        mainCell.lifetime = 1
+        mainCell.scale = 0.45
+        mainCell.contents = #imageLiteral(resourceName: "sunParticle").cgImage
+        return mainCell
+    }
+    
+    static var stars: CAEmitterCell {
+        let mainCell = CAEmitterCell()
+        mainCell.birthRate = 10
+        mainCell.color = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1).cgColor
+        mainCell.lifetime = 5
+        mainCell.scale = 0.05
+        mainCell.contents = #imageLiteral(resourceName: "snowParticle").cgImage
+        return mainCell
+    }
+    
     static var waves: CAEmitterCell {
         let cell = CAEmitterCell()
         cell.birthRate = 7
