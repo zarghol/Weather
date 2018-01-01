@@ -206,10 +206,6 @@ class ViewController: UIViewController {
         self.weatherDescriptionLabel.alpha = 0.0
         self.weatherDescriptionLabel.isHidden = false
         
-        self.sunSeparator.lineLayer.strokeStart = 0.5
-        self.sunSeparator.lineLayer.strokeEnd = 0.5
-        self.sunSeparator.isHidden = false
-        
         self.sunriseLabel.alpha = 0.0
         self.sunriseLabel.isHidden = false
         self.sunriseImageView.alpha = 0.0
@@ -236,9 +232,18 @@ class ViewController: UIViewController {
         self.rainLabel.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
         self.rainLabel.isHidden = false
         
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        self.sunSeparator.lineLayer.strokeStart = 0.5
+        self.sunSeparator.lineLayer.strokeEnd = 0.5
+        self.sunSeparator.isHidden = false
+        
         self.separator.lineLayer.strokeStart = 0.5
         self.separator.lineLayer.strokeEnd = 0.5
         self.separator.isHidden = false
+        CATransaction.setDisableActions(false)
+        CATransaction.commit()
+        
         
         self.forecastsTableView.alpha = 0.0
         self.forecastsTableView.isHidden = false
