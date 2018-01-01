@@ -28,6 +28,18 @@ class WeatherAnimationView: UIView {
         let emitters = type.emitter()
         
         for emitter in emitters {
+            self.layer.addSublayer(emitter)
+        }
+        currentEmitters = emitters
+        
+        self.updateEmittersRect()
+    }
+    
+    func updateEmittersRect() {
+        guard let emitters = currentEmitters, let type = self.type else {
+            return
+        }
+        for emitter in emitters {
             if [.cloudy, .wind].contains(type) {
                 emitter.emitterPosition = CGPoint(x: 0, y: 100.0)
                 emitter.emitterSize = CGSize(width: 100.0, height: 200.0)
@@ -38,14 +50,22 @@ class WeatherAnimationView: UIView {
                 emitter.emitterPosition = CGPoint(x: self.frame.width / 2, y: 0)
                 emitter.emitterSize = CGSize(width: self.frame.size.width, height: 5.0)
             }
-            self.layer.addSublayer(emitter)
         }
-        currentEmitters = emitters
+    }
+    
+    override func layoutSubviews() {
+        guard let type = type else {
+            return
+        }
+        self.removeAnimation()
+        self.initializeAnimation(type: type)
+        
     }
     
     func removeAnimation() {
         if let currentEmitter = currentEmitters {
             currentEmitter.forEach { $0.removeFromSuperlayer() }
         }
+        currentEmitters = nil
     }
 }
