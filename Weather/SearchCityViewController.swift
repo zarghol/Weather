@@ -12,6 +12,8 @@ import MapKit
 
 class SearchCityViewController: UITableViewController {
     
+    @IBOutlet weak var positionButton: UIBarButtonItem!
+    
     var geocoder = CLGeocoder()
     
     var citys = [String]() {
@@ -21,22 +23,47 @@ class SearchCityViewController: UITableViewController {
             }
         }
     }
+   
+    let locationManager = CLLocationManager()
+    
+    var newLocation: OpenWeatherLocation?
+    
+    let searchController: UISearchController = {
+        let searchVC = UISearchController(searchResultsController: nil)
+        searchVC.dimsBackgroundDuringPresentation = false
+        searchVC.hidesNavigationBarDuringPresentation = false
+        return searchVC
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.tableView.dataSource = self
 
-        let searchController = UISearchController(searchResultsController: nil)
+        locationManager.delegate = self
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = false
-        searchController.hidesNavigationBarDuringPresentation = false
 
         if #available(iOS 11.0, *) {
             self.navigationItem.searchController = searchController
             self.navigationItem.hidesSearchBarWhenScrolling = false
         } else {
             self.tableView.tableHeaderView = searchController.searchBar
+        }
+        
+        self.testLocationStatus(CLLocationManager.authorizationStatus())
+    }
+    
+    func testLocationStatus(_ status: CLAuthorizationStatus) {
+        switch status {
+        case .authorizedAlways, .authorizedWhenInUse:
+            positionButton.isEnabled = true
+            return
+            
+        case .denied, .restricted:
+            self.navigationItem.rightBarButtonItem = nil
+            
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
         }
     }
 
@@ -49,48 +76,30 @@ class SearchCityViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return citys.count
     }
-
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cityCell", for: indexPath)
-
-        cell.textLabel?.text = citys[indexPath.row]
+        let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: "cityCell", for: indexPath)
+        guard let cell = dequeuedCell as? CityCell else {
+            dequeuedCell.textLabel?.text = citys[indexPath.row]
+            return dequeuedCell
+        }
+        cell.cityNameLabel.text = citys[indexPath.row]
 
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-//        OpenWeatherLocation.query(citys[indexPath.row])
-        if #available(iOS 11.0, *) {
-            self.navigationItem.searchController?.dismiss(animated: true, completion: {
-                self.dismiss(animated: true, completion: nil)
-            })
-        } else {
-            // Fallback on earlier versions
-        }
-        
+        self.newLocation = OpenWeatherLocation.query(citys[indexPath.row])
+        self.performSegue(withIdentifier: "closeSearchSegue", sender: self)
     }
     
     @IBAction func useMyPosition() {
-//        OpenWeatherLocation.coordinate(<#T##Double#>, <#T##Double#>)
-        self.dismiss(animated: true, completion: nil)
+        locationManager.startUpdatingLocation()
     }
     
     @IBAction func cancel() {
         self.dismiss(animated: true, completion: nil)
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension SearchCityViewController: UISearchResultsUpdating {
@@ -101,6 +110,7 @@ extension SearchCityViewController: UISearchResultsUpdating {
         if geocoder.isGeocoding {
             geocoder.cancelGeocode()
         }
+        print("try to geocode : \(textToSearch)")
         geocoder.geocodeAddressString(textToSearch) { (places, error) in
             if let error = error {
                 print("error at geocoding : \(error)")
@@ -112,10 +122,23 @@ extension SearchCityViewController: UISearchResultsUpdating {
                 .map { ($0.locality, $0.isoCountryCode) }
                 .filter { $0.0 != nil && $0.1 != nil }
                 .map { "\($0.0!), \($0.1!) "}
-            
         }
+    }
+}
+
+extension SearchCityViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let position = locations.first else {
+            return
+        }
+        manager.stopUpdatingLocation()
+
+        newLocation = OpenWeatherLocation.coordinate(position.coordinate.latitude, position.coordinate.longitude)
+        
+        self.performSegue(withIdentifier: "closeSearchSegue", sender: self)
         
     }
-    
-    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        self.testLocationStatus(status)
+    }
 }

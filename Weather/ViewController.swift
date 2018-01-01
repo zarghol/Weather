@@ -325,6 +325,15 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func unwindMainViewController(segue: UIStoryboardSegue) {
+        guard let searchVC = segue.source as? SearchCityViewController,
+              let newLocation = searchVC.newLocation else {
+            return
+        }
+        self.ws.configuration.location = newLocation
+        self.fetchData()
+    }
 }
 
 extension ViewController: UITableViewDataSource {
