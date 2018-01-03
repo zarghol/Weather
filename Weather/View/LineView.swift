@@ -35,10 +35,10 @@ class LineView: UIView {
         }
     }
     
-    override func draw(_ rect: CGRect) {
+    override func layoutSubviews() {
         let path = CGMutablePath()
-        path.move(to: rect.origin)
-        let end = CGPoint(x: rect.width, y: 0)
+        path.move(to: self.bounds.origin)
+        let end = CGPoint(x: self.bounds.width, y: 0)
         path.addLine(to: end)
         lineLayer.path = path
     }

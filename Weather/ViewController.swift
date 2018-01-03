@@ -50,7 +50,7 @@ class ViewController: UIViewController {
         return temperatureFormatter
     }()
     
-    let ws: OpenWeatherService = MockupService(conf: .default)// OpenWeatherWebService(configuration: .default)
+    var ws: OpenWeatherService = OpenWeatherWebService(configuration: .default)// MockupService(conf: .default)//
     
     var forecast: Forecast? {
         didSet {
@@ -112,8 +112,16 @@ class ViewController: UIViewController {
                 
                 self.forecastsTableView.separatorColor = type.thirdColor
                 
+                // If already animate first,
+                // Change the visibility of the datas if necessary (if error before)
+                // change background color
+                // Else, we animate all together
                 if self.alreadyFirstAnimate {
                     self.changeVisibilityDatas(false, animate: true)
+                    
+                    UIView.animate(withDuration: 0.3, delay: 0.0, options: [], animations: {
+                        self.view.backgroundColor = type.backgroundColor
+                    }, completion: nil)
                 } else {
                     self.animateFirst()
                 }
@@ -140,7 +148,7 @@ class ViewController: UIViewController {
                     let text = self.forecast == nil ? "Ooops ! Something went wrong ! 😵\n\(error.localizedDescription)" : "Something went wrong : data not refreshed"
                     labelToUse?.text = text
                     labelToUse?.isHidden = false
-                    self.changeVisibilityDatas(true, animate: false)
+                    self.changeVisibilityDatas(self.forecast == nil, animate: false)
                 } else {
                     self.minorErrorLabel.isHidden = true
                     self.majorErrorLabel.isHidden = true
@@ -198,10 +206,6 @@ class ViewController: UIViewController {
         self.weatherDescriptionLabel.alpha = 0.0
         self.weatherDescriptionLabel.isHidden = false
         
-        self.sunSeparator.lineLayer.strokeStart = 0.5
-        self.sunSeparator.lineLayer.strokeEnd = 0.5
-        self.sunSeparator.isHidden = false
-        
         self.sunriseLabel.alpha = 0.0
         self.sunriseLabel.isHidden = false
         self.sunriseImageView.alpha = 0.0
@@ -228,9 +232,18 @@ class ViewController: UIViewController {
         self.rainLabel.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
         self.rainLabel.isHidden = false
         
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        self.sunSeparator.lineLayer.strokeStart = 0.5
+        self.sunSeparator.lineLayer.strokeEnd = 0.5
+        self.sunSeparator.isHidden = false
+        
         self.separator.lineLayer.strokeStart = 0.5
         self.separator.lineLayer.strokeEnd = 0.5
         self.separator.isHidden = false
+        CATransaction.setDisableActions(false)
+        CATransaction.commit()
+        
         
         self.forecastsTableView.alpha = 0.0
         self.forecastsTableView.isHidden = false
@@ -277,8 +290,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func restartAnim() {
-        alreadyFirstAnimate = false
-        self.animateFirst()
+//        alreadyFirstAnimate = false
+//        self.animateFirst()
+        self.performSegue(withIdentifier: "SearchCitySegue", sender: self)
     }
     
     var timer: Timer!
@@ -323,6 +337,15 @@ class ViewController: UIViewController {
                 self?.nextForecasts = forecasts.sorted { $0.date < $1.date }
             }
         }
+    }
+    
+    @IBAction func unwindMainViewController(segue: UIStoryboardSegue) {
+        guard let searchVC = segue.source as? SearchCityViewController,
+              let newLocation = searchVC.newLocation else {
+            return
+        }
+        self.ws.configuration.location = newLocation
+        self.fetchData()
     }
 }
 

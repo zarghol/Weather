@@ -21,5 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         EasyAnimation.initialize()
         return true
     }
+    
+    // TODO : handle background for update at restart of the app
 }
 
