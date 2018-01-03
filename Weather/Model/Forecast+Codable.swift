@@ -53,52 +53,52 @@ extension Forecast: Decodable {
         self.date = try values.decode(Date.self, forKey: .date)
         var conditions = try values.decode([WeatherCondition].self, forKey: .conditions)
         
-        if let sunset = sunset, let sunrise = sunrise {
+        if let sunset = self.sunset, let sunrise = self.sunrise {
             conditions = Forecast.checkNight(date: date, sunset: sunset, sunrise: sunrise, conditions: conditions)
         }
         
         self.conditions = conditions
         let mainStructure = try values.nestedContainer(keyedBy: MainCodingKeys.self, forKey: .main)
         
-        temperature = Measurement<UnitTemperature>(value: try mainStructure.decode(Double.self, forKey: .temperature),
+        self.temperature = Measurement<UnitTemperature>(value: try mainStructure.decode(Double.self, forKey: .temperature),
                                                    unit: .celsius)
-        pressure = Measurement<UnitPressure>(value: try mainStructure.decode(Double.self, forKey: .pressure),
+        self.pressure = Measurement<UnitPressure>(value: try mainStructure.decode(Double.self, forKey: .pressure),
                                              unit: .hectopascals)
-        humidity = try mainStructure.decode(Double.self, forKey: .humidity)
-        temperatureMinimum = Measurement<UnitTemperature>(value: try mainStructure.decode(Double.self, forKey: .temperatureMinimum),
+        self.humidity = try mainStructure.decode(Double.self, forKey: .humidity)
+        self.temperatureMinimum = Measurement<UnitTemperature>(value: try mainStructure.decode(Double.self, forKey: .temperatureMinimum),
                                                           unit: .celsius)
-        temperatureMaximum = Measurement<UnitTemperature>(value: try mainStructure.decode(Double.self, forKey: .temperatureMaximum),
+        self.temperatureMaximum = Measurement<UnitTemperature>(value: try mainStructure.decode(Double.self, forKey: .temperatureMaximum),
                                                           unit: .celsius)
         
-        visibility = try values.decodeIfPresent(Int.self, forKey: .visibility)
+        self.visibility = try values.decodeIfPresent(Int.self, forKey: .visibility)
 //        wind = try values.decodeIfPresent(WindCondition.self, forKey: .wind)
         
         let cloudsStructure = try values.nestedContainer(keyedBy: CloudsCodingKeys.self, forKey: .clouds)
-        clouds = try cloudsStructure.decode(Double.self, forKey: .all)
+        self.clouds = try cloudsStructure.decode(Double.self, forKey: .all)
         
         
-        city = try values.decodeIfPresent(String.self, forKey: .city)
+        self.city = try values.decodeIfPresent(String.self, forKey: .city)
         
         if values.contains(.rain) {
             let rainStructure = try values.nestedContainer(keyedBy: RainCodingKeys.self, forKey: .rain)
             if let rainValue = try rainStructure.decodeIfPresent(Double.self, forKey: .rainVolume) {
-                rainVolume = Measurement<UnitLength>(value: rainValue, unit: .millimeters)
+                self.rainVolume = Measurement<UnitLength>(value: rainValue, unit: .millimeters)
             } else {
-                rainVolume = nil
+                self.rainVolume = nil
             }
         } else {
-            rainVolume = nil
+            self.rainVolume = nil
         }
         
         if values.contains(.snow) {
             let snowStructure = try values.nestedContainer(keyedBy: SnowCodingKeys.self, forKey: .snow)
             if let snowValue = try snowStructure.decodeIfPresent(Double.self, forKey: .snowVolume) {
-                snowVolume = Measurement<UnitLength>(value: snowValue, unit: .millimeters)
+                self.snowVolume = Measurement<UnitLength>(value: snowValue, unit: .millimeters)
             } else {
-                snowVolume = nil
+                self.snowVolume = nil
             }
         } else {
-            snowVolume = nil
+            self.snowVolume = nil
         }
     }
     

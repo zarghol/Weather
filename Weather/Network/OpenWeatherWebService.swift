@@ -43,7 +43,7 @@ class OpenWeatherWebService: BaseWebService, WebDataService {
         }
         component.path.append(pathComponent)
         
-        component.queryItems = configuration.queryItems
+        component.queryItems = self.configuration.queryItems
         component.queryItems?.append(contentsOf: additionalQueryItems)
         
         guard let url = component.url else {

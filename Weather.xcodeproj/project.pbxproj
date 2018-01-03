@@ -188,6 +188,24 @@
 			path = WeatherUITests;
 			sourceTree = "<group>";
 		};
+		18AF716D1FFD1BB0001ADAFC /* IBDesignables */ = {
+			isa = PBXGroup;
+			children = (
+				18C2B5D41FF5821F0028AF24 /* RadiusButton.swift */,
+				18AC7B491FF69B6A00E3D810 /* LineView.swift */,
+			);
+			path = IBDesignables;
+			sourceTree = "<group>";
+		};
+		18AF716E1FFD1BD7001ADAFC /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				18C47BFC1FF40D7800D2FCB3 /* ForecastCell.swift */,
+				1801C5621FFA98BC002C696D /* CityCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		18C47BF21FF2ACBE00D2FCB3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -213,14 +231,12 @@
 		18C47C021FF5754900D2FCB3 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				18C47BFC1FF40D7800D2FCB3 /* ForecastCell.swift */,
-				18C2B5D41FF5821F0028AF24 /* RadiusButton.swift */,
+				18AF716E1FFD1BD7001ADAFC /* Cells */,
+				18AF716D1FFD1BB0001ADAFC /* IBDesignables */,
 				18C47C001FF41B9000D2FCB3 /* WeatherType+Color.swift */,
-				18AC7B491FF69B6A00E3D810 /* LineView.swift */,
 				1801C55A1FF822B4002C696D /* WeatherAnimationView.swift */,
 				1801C55C1FF85F51002C696D /* WeatherAnimation.swift */,
 				1801C55E1FF86089002C696D /* CAEmitterCell+Cells.swift */,
-				1801C5621FFA98BC002C696D /* CityCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";

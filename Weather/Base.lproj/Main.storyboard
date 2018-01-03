@@ -90,7 +90,7 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <action selector="restartAnim" destination="BYZ-38-t0r" eventType="touchUpInside" id="Pet-kb-lbJ"/>
+                                    <segue destination="7uS-CQ-cdN" kind="presentation" identifier="SearchCitySegue" modalPresentationStyle="overCurrentContext" modalTransitionStyle="crossDissolve" id="gsO-on-QwT"/>
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sunrise" translatesAutoresizingMaskIntoConstraints="NO" id="i65-DV-3uw">
@@ -285,7 +285,6 @@
                         <outlet property="sunsetImageView" destination="qjA-tQ-d9A" id="bAk-Tz-ZTr"/>
                         <outlet property="sunsetLabel" destination="cak-zM-sFc" id="L72-cb-Vkj"/>
                         <outlet property="weatherDescriptionLabel" destination="8ab-jY-X67" id="fZ6-96-iJc"/>
-                        <segue destination="7uS-CQ-cdN" kind="presentation" identifier="SearchCitySegue" modalPresentationStyle="overCurrentContext" modalTransitionStyle="crossDissolve" id="wQn-dG-mNg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

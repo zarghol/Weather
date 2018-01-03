@@ -276,7 +276,7 @@ extension WebSendService {
      :param: completion stuff to do with received datas (Asynchrone call)
      */
     func send(data: DataRepresentable, with request: URLRequest, completion: ((WSResult<Data>) -> Void)?) {
-        guard isReachable else {
+        guard self.isReachable else {
             completion?(.error(NetworkError.networkUnavailable))
             return
         }
@@ -306,7 +306,7 @@ extension WebFileService {
      :param: completion stuff to do with received datas (Asynchrone call)
      */
     func downloadFile(at url: URL, completion: ((WSResult<URL>) -> Void)?) {
-        guard isReachable else {
+        guard self.isReachable else {
             completion?(.error(NetworkError.networkUnavailable))
             return
         }
@@ -318,7 +318,7 @@ extension WebFileService {
     }
     
     func downloadFile(with request: URLRequest, completion: ((WSResult<URL>) -> Void)?) {
-        guard isReachable else {
+        guard self.isReachable else {
             completion?(.error(NetworkError.networkUnavailable))
             return
         }
@@ -332,17 +332,18 @@ extension WebFileService {
 
 class BaseWebService: NSObject, WebService {
     var isReachable: Bool {
+        // TODO: use of Reachability in case of ios < 11.0
         return true
     }
     
     internal lazy var session: URLSession = {
         let conf = URLSessionConfiguration.default
+        if #available(iOS 11.0, *) {
+            conf.waitsForConnectivity = true
+        }
         
-//        conf.waitsForConnectivity = true
         conf.timeoutIntervalForResource = 30.0
         
-        return URLSession(configuration: conf)//, delegate: self, delegateQueue: nil)
+        return URLSession(configuration: conf)
     }()
-    
-//    private let networkQueue = DispatchQueue(label: "networking", qos: DispatchQoS.background)
 }
