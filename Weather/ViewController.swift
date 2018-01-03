@@ -50,11 +50,18 @@ class ViewController: UIViewController {
         return temperatureFormatter
     }()
     
+    let hourFormatter: DateFormatter = {
+        let hourFormatter = DateFormatter()
+        hourFormatter.dateStyle = .none
+        hourFormatter.timeStyle = .short
+        return hourFormatter
+    }()
+    
     var ws: OpenWeatherService = OpenWeatherWebService(configuration: .default)// MockupService(conf: .default)//
     
     var forecast: Forecast? {
         didSet {
-            guard let forecast = forecast else {
+            guard let forecast = self.forecast else {
                 self.cityButton.setTitle(NSLocalizedString("Choose a city", comment: ""), for: .normal)
                 return
             }
@@ -73,18 +80,16 @@ class ViewController: UIViewController {
                 self.weatherDescriptionLabel.text = forecast.conditions.first?.description
                 self.weatherDescriptionLabel.textColor = type.textColor
                 
-                let hourFormatter = DateFormatter()
-                hourFormatter.dateStyle = .none
-                hourFormatter.timeStyle = .short
+                
                 if let sunrise = forecast.sunrise {
-                    self.sunriseLabel.text = hourFormatter.string(from: sunrise)
+                    self.sunriseLabel.text = self.hourFormatter.string(from: sunrise)
                 } else {
                     self.sunriseLabel.text = NSLocalizedString("no data", comment: "")
                 }
                 self.sunriseLabel.textColor = type.textColor
                 
                 if let sunset = forecast.sunset {
-                    self.sunsetLabel.text = hourFormatter.string(from: sunset)
+                    self.sunsetLabel.text = self.hourFormatter.string(from: sunset)
                 } else {
                     self.sunsetLabel.text = NSLocalizedString("no data", comment: "")
                 }
@@ -127,14 +132,13 @@ class ViewController: UIViewController {
                 }
                 
                 self.animationView.type = WeatherAnimation(weatherType: type)
-                
             }
         }
     }
     
     var nextForecasts = [Forecast]() {
         didSet {
-            DispatchQueue.main.async { [unowned self] in
+            DispatchQueue.main.async {
                 self.forecastsTableView.reloadData()
             }
         }
@@ -142,7 +146,7 @@ class ViewController: UIViewController {
     
     var error: Error? {
         didSet {
-            DispatchQueue.main.async { [unowned self] in
+            DispatchQueue.main.async {
                 if let error = self.error {
                     let labelToUse = self.forecast == nil ? self.majorErrorLabel : self.minorErrorLabel
                     let text = self.forecast == nil ? "Ooops ! Something went wrong ! 😵\n\(error.localizedDescription)" : "Something went wrong : data not refreshed"
@@ -158,39 +162,16 @@ class ViewController: UIViewController {
         }
     }
     
-    func changeVisibilityDatas(_ isHidden: Bool, animate: Bool) {
-        guard self.currentTemperatureLabel.isHidden != isHidden else {
-            return
-        }
-        
-        let views: [UIView] = [self.currentTemperatureLabel, self.minTemperatureLabel, self.maxTemperatureLabel, self.weatherDescriptionLabel, self.sunriseImageView, self.sunriseLabel, self.sunSeparator, self.sunsetLabel, self.sunsetImageView, self.pressureLabel, self.cloudsLabel, self.humidityLabel, self.rainLabel, self.separator, self.forecastsTableView]
-        
-        for view in views {
-            if animate {
-                view.alpha = isHidden ? 1.0 : 0.0
-                view.isHidden = false
-                
-                UIView.animate(withDuration: 1.0, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: [], animations: {
-                    view.alpha = isHidden ? 0.0 : 1.0
-                }, completion: { (_) in
-                    view.isHidden = isHidden
-                    view.alpha = 1.0
-                })
-            } else {
-                view.isHidden = isHidden
-            }
-        }
-    }
-    
     var alreadyFirstAnimate = false
     
     func animateFirst() {
-        guard !alreadyFirstAnimate else {
+        // ensure is called once only
+        guard !self.alreadyFirstAnimate else {
             return
         }
-        alreadyFirstAnimate = true
+        self.alreadyFirstAnimate = true
         
-        self.changeVisibilityDatas(true, animate: false)
+        // Initialize the view invisible but not hidden to animate alpha
         
         self.currentTemperatureLabel.transform = CGAffineTransform(translationX: 0.0, y: 10.0)
         self.currentTemperatureLabel.alpha = 0.0
@@ -232,6 +213,7 @@ class ViewController: UIViewController {
         self.rainLabel.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
         self.rainLabel.isHidden = false
         
+        // Do this because of interpolated animations
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         self.sunSeparator.lineLayer.strokeStart = 0.5
@@ -244,13 +226,15 @@ class ViewController: UIViewController {
         CATransaction.setDisableActions(false)
         CATransaction.commit()
         
-        
         self.forecastsTableView.alpha = 0.0
         self.forecastsTableView.isHidden = false
         
+        
         let backgroundColor = self.forecast?.conditions.first?.type.backgroundColor
 
+        // animate with EasyAnimation lib
         UIView.animateAndChain(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: [], animations: {
+            // animate backround color change if needed
             if let backgroundColor = backgroundColor {
                 self.view.backgroundColor = backgroundColor
             }
@@ -289,24 +273,69 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func restartAnim() {
-//        alreadyFirstAnimate = false
-//        self.animateFirst()
-        self.performSegue(withIdentifier: "SearchCitySegue", sender: self)
+    func changeVisibilityDatas(_ isHidden: Bool, animate: Bool) {
+        guard self.currentTemperatureLabel.isHidden != isHidden else {
+            return
+        }
+        
+        let views: [UIView] = [self.currentTemperatureLabel, self.minTemperatureLabel, self.maxTemperatureLabel, self.weatherDescriptionLabel, self.sunriseImageView, self.sunriseLabel, self.sunSeparator, self.sunsetLabel, self.sunsetImageView, self.pressureLabel, self.cloudsLabel, self.humidityLabel, self.rainLabel, self.separator, self.forecastsTableView]
+        
+        for view in views {
+            if animate {
+                // just simple fade animation
+                view.alpha = isHidden ? 1.0 : 0.0
+                view.isHidden = false
+                
+                UIView.animate(withDuration: 1.0, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: [], animations: {
+                    view.alpha = isHidden ? 0.0 : 1.0
+                }, completion: { (_) in
+                    view.isHidden = isHidden
+                    view.alpha = 1.0
+                })
+            } else {
+                view.isHidden = isHidden
+            }
+        }
     }
     
-    var timer: Timer!
+//    @IBAction func restartAnim() {
+////        alreadyFirstAnimate = false
+////        self.animateFirst()
+//        self.performSegue(withIdentifier: "SearchCitySegue", sender: self)
+//    }
+    
+    private(set) var timer: Timer! {
+        didSet {
+            // invalidate old timer if exist
+            if oldValue != nil, oldValue.isValid {
+                oldValue.invalidate()
+            }
+            // start new timer
+            if let timer = self.timer {
+                RunLoop.current.add(timer, forMode: .defaultRunLoopMode)
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        forecastsTableView.dataSource = self
+        self.forecastsTableView.dataSource = self
         self.changeVisibilityDatas(true, animate: false)
         
+        self.startTimer()
+    }
+    
+    func startTimer() {
+        // already started
+        guard self.timer == nil else {
+            return
+        }
         self.fetchData()
-        
-        timer = Timer(timeInterval: 60, target: self, selector: #selector(fetchData), userInfo: nil, repeats: true)
-        
-        RunLoop.current.add(timer, forMode: .defaultRunLoopMode)
+        self.timer = Timer(timeInterval: 60, target: self, selector: #selector(fetchData), userInfo: nil, repeats: true)
+    }
+    
+    func stopTimer() {
+        self.timer = nil
     }
     
     @objc func fetchData() {
@@ -351,7 +380,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return nextForecasts.count
+        return self.nextForecasts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -359,16 +388,16 @@ extension ViewController: UITableViewDataSource {
         guard let cell = dequeuedCell as? ForecastCell else {
             return dequeuedCell
         }
-        let data = nextForecasts[indexPath.row]
+        let data = self.nextForecasts[indexPath.row]
         let type = data.conditions.first?.type ?? .other
         let textColor = (self.forecast?.conditions.first?.type ?? .other).textColor
         let dayFormatter = DateFormatter()
         dayFormatter.dateFormat = "HH 'h'"
         cell.dayLabel.text = dayFormatter.string(from: data.date)
         cell.dayLabel.textColor = textColor
-        cell.minLabel.text = temperatureFormatter.string(from: data.temperatureMinimum)
+        cell.minLabel.text = self.temperatureFormatter.string(from: data.temperatureMinimum)
         cell.minLabel.textColor = textColor
-        cell.maxLabel.text = temperatureFormatter.string(from: data.temperatureMaximum)
+        cell.maxLabel.text = self.temperatureFormatter.string(from: data.temperatureMaximum)
         cell.maxLabel.textColor = textColor
         cell.backgroundColor = type.backgroundColor.withAlphaComponent(0.3)
         

@@ -40,14 +40,14 @@ class SearchCityViewController: UITableViewController {
         
         self.tableView.dataSource = self
 
-        locationManager.delegate = self
-        searchController.searchResultsUpdater = self
+        self.locationManager.delegate = self
+        self.searchController.searchResultsUpdater = self
 
         if #available(iOS 11.0, *) {
-            self.navigationItem.searchController = searchController
+            self.navigationItem.searchController = self.searchController
             self.navigationItem.hidesSearchBarWhenScrolling = false
         } else {
-            self.tableView.tableHeaderView = searchController.searchBar
+            self.tableView.tableHeaderView = self.searchController.searchBar
         }
         
         self.testLocationStatus(CLLocationManager.authorizationStatus())
@@ -56,14 +56,14 @@ class SearchCityViewController: UITableViewController {
     func testLocationStatus(_ status: CLAuthorizationStatus) {
         switch status {
         case .authorizedAlways, .authorizedWhenInUse:
-            positionButton.isEnabled = true
+            self.positionButton.isEnabled = true
             return
             
         case .denied, .restricted:
             self.navigationItem.rightBarButtonItem = nil
             
         case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
+            self.locationManager.requestWhenInUseAuthorization()
         }
     }
 
@@ -74,27 +74,27 @@ class SearchCityViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return citys.count
+        return self.citys.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: "cityCell", for: indexPath)
         guard let cell = dequeuedCell as? CityCell else {
-            dequeuedCell.textLabel?.text = citys[indexPath.row]
+            dequeuedCell.textLabel?.text = self.citys[indexPath.row]
             return dequeuedCell
         }
-        cell.cityNameLabel.text = citys[indexPath.row]
+        cell.cityNameLabel.text = self.citys[indexPath.row]
 
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.newLocation = OpenWeatherLocation.query(citys[indexPath.row])
+        self.newLocation = OpenWeatherLocation.query(self.citys[indexPath.row])
         self.performSegue(withIdentifier: "closeSearchSegue", sender: self)
     }
     
     @IBAction func useMyPosition() {
-        locationManager.startUpdatingLocation()
+        self.locationManager.startUpdatingLocation()
     }
     
     @IBAction func cancel() {
@@ -107,11 +107,11 @@ extension SearchCityViewController: UISearchResultsUpdating {
         guard let textToSearch = searchController.searchBar.text, textToSearch.count > 1 else {
             return
         }
-        if geocoder.isGeocoding {
-            geocoder.cancelGeocode()
+        if self.geocoder.isGeocoding {
+            self.geocoder.cancelGeocode()
         }
         print("try to geocode : \(textToSearch)")
-        geocoder.geocodeAddressString(textToSearch) { (places, error) in
+        self.geocoder.geocodeAddressString(textToSearch) { [unowned self] (places, error) in
             if let error = error {
                 print("error at geocoding : \(error)")
             }
@@ -133,7 +133,7 @@ extension SearchCityViewController: CLLocationManagerDelegate {
         }
         manager.stopUpdatingLocation()
 
-        newLocation = OpenWeatherLocation.coordinate(position.coordinate.latitude, position.coordinate.longitude)
+        self.newLocation = OpenWeatherLocation.coordinate(position.coordinate.latitude, position.coordinate.longitude)
         
         self.performSegue(withIdentifier: "closeSearchSegue", sender: self)
         
