@@ -16,12 +16,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         
         EasyAnimation.initialize()
         return true
     }
     
-    // TODO : handle background for update at restart of the app
+    // restart the timer of fecthing data if needed
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        guard let timerViewController = window?.rootViewController as? ViewController else {
+            return
+        }
+        print("didBecomeActive")
+        timerViewController.startTimer()
+    }
+    
+    // stop the timer since we go in background
+    func applicationWillResignActive(_ application: UIApplication) {
+        guard let timerViewController = window?.rootViewController as? ViewController else {
+            return
+        }
+        print("willResignActive")
+        
+        timerViewController.stopTimer()
+    }
 }
 

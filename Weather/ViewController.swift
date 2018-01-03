@@ -295,18 +295,38 @@ class ViewController: UIViewController {
         self.performSegue(withIdentifier: "SearchCitySegue", sender: self)
     }
     
-    var timer: Timer!
+    private(set) var timer: Timer! {
+        didSet {
+            // invalidate old timer if exist
+            if oldValue != nil, oldValue.isValid {
+                oldValue.invalidate()
+            }
+            // start new timer
+            if let timer = timer {
+                RunLoop.current.add(timer, forMode: .defaultRunLoopMode)
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         forecastsTableView.dataSource = self
         self.changeVisibilityDatas(true, animate: false)
         
+        startTimer()
+    }
+    
+    func startTimer() {
+        // already started
+        guard timer == nil else {
+            return
+        }
         self.fetchData()
-        
         timer = Timer(timeInterval: 60, target: self, selector: #selector(fetchData), userInfo: nil, repeats: true)
-        
-        RunLoop.current.add(timer, forMode: .defaultRunLoopMode)
+    }
+    
+    func stopTimer() {
+        timer = nil
     }
     
     @objc func fetchData() {
