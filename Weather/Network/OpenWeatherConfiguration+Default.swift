@@ -13,7 +13,7 @@ extension OpenWeatherConfiguration {
         return OpenWeatherConfiguration(
             location: .id(6454573),
             unit: .metric,
-            apiKey: "APIKEY"
+            apiKey: "APIKEY",
             language: Locale.current.languageCode ?? "en"
         )
     }
