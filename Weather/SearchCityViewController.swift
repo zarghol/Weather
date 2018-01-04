@@ -111,14 +111,14 @@ extension SearchCityViewController: UISearchResultsUpdating {
             self.geocoder.cancelGeocode()
         }
         print("try to geocode : \(textToSearch)")
-        self.geocoder.geocodeAddressString(textToSearch) { [unowned self] (places, error) in
+        self.geocoder.geocodeAddressString(textToSearch) { [weak self] (places, error) in
             if let error = error {
                 print("error at geocoding : \(error)")
             }
             guard let places = places else {
                 return
             }
-            self.citys = places
+            self?.citys = places
                 .map { ($0.locality, $0.isoCountryCode) }
                 .filter { $0.0 != nil && $0.1 != nil }
                 .map { "\($0.0!), \($0.1!) "}
