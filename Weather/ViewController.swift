@@ -147,9 +147,12 @@ class ViewController: UIViewController {
     var error: Error? {
         didSet {
             DispatchQueue.main.async {
+                
+                
                 if let error = self.error {
+                    let errorMessage = (error as? NetworkError)?.description ?? error.localizedDescription
                     let labelToUse = self.forecast == nil ? self.majorErrorLabel : self.minorErrorLabel
-                    let text = self.forecast == nil ? "Ooops ! Something went wrong ! 😵\n\(error.localizedDescription)" : "Something went wrong : data not refreshed"
+                    let text = self.forecast == nil ? "Ooops ! Something went wrong ! 😵\n\(errorMessage)" : "Something went wrong : data not refreshed"
                     labelToUse?.text = text
                     labelToUse?.isHidden = false
                     self.changeVisibilityDatas(self.forecast == nil, animate: false)
