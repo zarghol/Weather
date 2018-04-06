@@ -12,6 +12,26 @@ enum MockupError: Error {
     case notImplemented
 }
 
+
+class ErrorMockupService: OpenWeatherService {
+    var configuration: OpenWeatherConfiguration
+    
+    var error: NetworkError
+    
+    init(conf: OpenWeatherConfiguration, error: NetworkError) {
+        self.configuration = conf
+        self.error = error
+    }
+    
+    func getCurrentData(completion: @escaping (WSResult<Forecast>) -> Void) {
+        completion(.error(error))
+    }
+    
+    func getForecasts(forecastsNumber: Int? = nil, completion: @escaping (WSResult<[Forecast]>) -> Void) {
+        completion(.error(error))
+    }
+}
+
 class MockupService: OpenWeatherService {
     var configuration: OpenWeatherConfiguration
     
@@ -39,22 +59,21 @@ class MockupService: OpenWeatherService {
         )
     }
     
-    
     func getCurrentData(completion: @escaping (WSResult<Forecast>) -> Void) {
         completion(.success(mockup(with: .atmosphere, date: Date())))
     }
     
     func getForecasts(forecastsNumber: Int? = nil, completion: @escaping (WSResult<[Forecast]>) -> Void) {
-        let now = Date()
+        completion(.error(NetworkError.noData))
         
-        let number = forecastsNumber ?? 12
-        let secondIn3Hour = 3600.0 * 3.0
-        let forecasts: [Forecast] = stride(from: 0.0, to: secondIn3Hour * Double(number), by: secondIn3Hour).map { hour in
-            let date = now.addingTimeInterval(hour)
-            return self.mockup(with: .clear, date: date)
-        }
-        completion(.success(forecasts))
+//        let now = Date()
+//
+//        let number = forecastsNumber ?? 12
+//        let secondIn3Hour = 3600.0 * 3.0
+//        let forecasts: [Forecast] = stride(from: 0.0, to: secondIn3Hour * Double(number), by: secondIn3Hour).map { hour in
+//            let date = now.addingTimeInterval(hour)
+//            return self.mockup(with: .clear, date: date)
+//        }
+//        completion(.success(forecasts))
     }
-    
-    
 }
