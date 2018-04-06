@@ -1,12 +1,19 @@
 PODS:
   - EasyAnimation (2.0.1)
+  - RxCocoa (4.1.2):
+    - RxSwift (~> 4.0)
+  - RxSwift (4.1.2)
 
 DEPENDENCIES:
   - EasyAnimation
+  - RxCocoa (~> 4.0)
+  - RxSwift (~> 4.0)
 
 SPEC CHECKSUMS:
   EasyAnimation: 0bc71a385be3fc0239e487fb8f0dde626e6c7466
+  RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
+  RxSwift: e49536837d9901277638493ea537394d4b55f570
 
-PODFILE CHECKSUM: dfdceeda0e81dd3876bbd7c15ae08f000684dd88
+PODFILE CHECKSUM: d4309696b9a181040345827659fbaa5ad87ead82
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.4.0

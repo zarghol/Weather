@@ -8,6 +8,8 @@ target 'Weather' do
   # Pods for Weather
 
   pod 'EasyAnimation'
+  pod 'RxSwift',    '~> 4.0'
+  pod 'RxCocoa',    '~> 4.0'
 
   target 'WeatherTests' do
     inherit! :search_paths
