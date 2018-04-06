@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class ViewController: UIViewController {
     
@@ -39,6 +41,8 @@ class ViewController: UIViewController {
     
     // MARK: -
     
+    let normalMeasureFormatter = MeasurementFormatter()
+    
     let temperatureFormatter: MeasurementFormatter = {
         let temperatureFormatter = MeasurementFormatter()
         temperatureFormatter.unitOptions = .temperatureWithoutUnit
@@ -57,123 +61,17 @@ class ViewController: UIViewController {
         return hourFormatter
     }()
     
-    var ws: OpenWeatherService = OpenWeatherWebService(configuration: .default)// MockupService(conf: .default)//
+    var ws: OpenWeatherService = OpenWeatherWebService(configuration: .default) // ErrorMockupService(conf: .default, error: .noData) // MockupService(conf: .default) //
     
-    var forecast: Forecast? {
-        didSet {
-            guard let forecast = self.forecast else {
-                self.cityButton.setTitle(NSLocalizedString("Choose a city", comment: ""), for: .normal)
-                return
-            }
-            
-            DispatchQueue.main.async {
-                let type = forecast.conditions.first?.type ?? WeatherType.other
-                
-                self.cityButton.setTitle(forecast.city, for: .normal)
-                self.cityButton.tintColor = type.textColor
-                self.currentTemperatureLabel.text = self.temperatureFormatter.string(from: forecast.temperature)
-                self.currentTemperatureLabel.textColor = type.textColor
-                self.minTemperatureLabel.text = self.temperatureFormatter.string(from: forecast.temperatureMinimum)
-                self.minTemperatureLabel.textColor = type.textColor
-                self.maxTemperatureLabel.text = self.temperatureFormatter.string(from: forecast.temperatureMaximum)
-                self.maxTemperatureLabel.textColor = type.textColor
-                self.weatherDescriptionLabel.text = forecast.conditions.first?.description
-                self.weatherDescriptionLabel.textColor = type.textColor
-                
-                
-                if let sunrise = forecast.sunrise {
-                    self.sunriseLabel.text = self.hourFormatter.string(from: sunrise)
-                } else {
-                    self.sunriseLabel.text = NSLocalizedString("no data", comment: "")
-                }
-                self.sunriseLabel.textColor = type.textColor
-                
-                if let sunset = forecast.sunset {
-                    self.sunsetLabel.text = self.hourFormatter.string(from: sunset)
-                } else {
-                    self.sunsetLabel.text = NSLocalizedString("no data", comment: "")
-                }
-                self.sunsetLabel.textColor = type.textColor
-                
-                let normalMeasureFormatter = MeasurementFormatter()
-                
-                self.pressureLabel.text = "\(NSLocalizedString("Pressure", comment: "")) : \(normalMeasureFormatter.string(from: forecast.pressure))"
-                self.pressureLabel.textColor = type.textColor
-                self.humidityLabel.text = "\(NSLocalizedString("Humidity", comment: "")) : \(forecast.humidity) %"
-                self.humidityLabel.textColor = type.textColor
-                self.cloudsLabel.text = "\(NSLocalizedString("Clouds", comment: "")) : \(forecast.clouds) %"
-                self.cloudsLabel.textColor = type.textColor
-                if let rainVolume = forecast.rainVolume {
-                    self.rainLabel.text = "\(NSLocalizedString("Rain", comment: "")) : \(normalMeasureFormatter.string(from: rainVolume))"
-                } else {
-                    self.rainLabel.text = "\(NSLocalizedString("Rain", comment: "")) : \(NSLocalizedString("no data", comment: ""))"
-                }
-                self.rainLabel.textColor = type.textColor
-                
-                self.separator.lineColor = type.thirdColor
-                self.sunSeparator.lineColor = type.thirdColor
-                self.sunsetImageView.tintColor = type.thirdColor
-                self.sunriseImageView.tintColor = type.thirdColor
-                
-                self.forecastsTableView.separatorColor = type.thirdColor
-                
-                // If already animate first,
-                // Change the visibility of the datas if necessary (if error before)
-                // change background color
-                // Else, we animate all together
-                if self.alreadyFirstAnimate {
-                    self.changeVisibilityDatas(false, animate: true)
-                    
-                    UIView.animate(withDuration: 0.3, delay: 0.0, options: [], animations: {
-                        self.view.backgroundColor = type.backgroundColor
-                    }, completion: nil)
-                } else {
-                    self.animateFirst()
-                }
-                
-                self.animationView.type = WeatherAnimation(weatherType: type)
-            }
-        }
-    }
+    var forecast: Variable<Forecast?> = Variable(nil)
     
-    var nextForecasts = [Forecast]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.forecastsTableView.reloadData()
-            }
-        }
-    }
+    var nextForecasts: Variable<[Forecast]> = Variable([])
     
-    var error: Error? {
-        didSet {
-            DispatchQueue.main.async {
-                
-                
-                if let error = self.error {
-                    let errorMessage = (error as? NetworkError)?.description ?? error.localizedDescription
-                    let labelToUse = self.forecast == nil ? self.majorErrorLabel : self.minorErrorLabel
-                    let text = self.forecast == nil ? "Ooops ! Something went wrong ! 😵\n\(errorMessage)" : "Something went wrong : data not refreshed"
-                    labelToUse?.text = text
-                    labelToUse?.isHidden = false
-                    self.changeVisibilityDatas(self.forecast == nil, animate: false)
-                } else {
-                    self.minorErrorLabel.isHidden = true
-                    self.majorErrorLabel.isHidden = true
-                    self.changeVisibilityDatas(false, animate: true)
-                }
-            }
-        }
-    }
+    var error: Variable<Error?> = Variable(nil)
     
-    var alreadyFirstAnimate = false
+    let disposeBag = DisposeBag()
     
     func animateFirst() {
-        // ensure is called once only
-        guard !self.alreadyFirstAnimate else {
-            return
-        }
-        self.alreadyFirstAnimate = true
-        
         // Initialize the view invisible but not hidden to animate alpha
         
         self.currentTemperatureLabel.transform = CGAffineTransform(translationX: 0.0, y: 10.0)
@@ -233,7 +131,7 @@ class ViewController: UIViewController {
         self.forecastsTableView.isHidden = false
         
         
-        let backgroundColor = self.forecast?.conditions.first?.type.backgroundColor
+        let backgroundColor = self.forecast.value?.conditions.first?.type.backgroundColor
 
         // animate with EasyAnimation lib
         UIView.animateAndChain(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: [], animations: {
@@ -319,13 +217,173 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    // MARK: -
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.forecastsTableView.dataSource = self
         self.changeVisibilityDatas(true, animate: false)
         
         self.startTimer()
+        
+        setupErrorBinding()
+        setupForecastBinding()
+        setupForecastsBinding()
+    }
+    
+    func setupForecastBinding() {
+        let driver = self.forecast
+            .asDriver()
+            .filter { $0 != nil }
+            .map { $0! }
+        
+        func conditionType(of forecast: Forecast) -> WeatherType {
+            return forecast.conditions.first?.type ?? .other
+        }
+
+        self.forecast.asObservable().subscribe {
+            print("------------\n", $0, terminator: "\n---------\n\n")
+        }.disposed(by: disposeBag)
+        
+        // TODO: check if can create observable on part of forecast
+        
+        
+        self.forecast.asDriver().filter { $0 == nil }.drive(onNext: { _ in
+            self.cityButton.setTitle(NSLocalizedString("Choose a city", comment: ""), for: .normal)
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            self.currentTemperatureLabel.text = self.temperatureFormatter.string(from: $0.temperature)
+            self.currentTemperatureLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            self.minTemperatureLabel.text = self.temperatureFormatter.string(from: $0.temperatureMinimum)
+            self.minTemperatureLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            self.maxTemperatureLabel.text = self.temperatureFormatter.string(from: $0.temperatureMaximum)
+            self.maxTemperatureLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            self.weatherDescriptionLabel.text = $0.conditions.first?.description
+            self.weatherDescriptionLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            self.cityButton.setTitle($0.city, for: .normal)
+            self.cityButton.tintColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            if let sunrise = $0.sunrise {
+                self.sunriseLabel.text = self.hourFormatter.string(from: sunrise)
+            } else {
+                self.sunriseLabel.text = NSLocalizedString("no data", comment: "")
+            }
+            self.sunriseLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            if let sunset = $0.sunset {
+                self.sunsetLabel.text = self.hourFormatter.string(from: sunset)
+            } else {
+                self.sunsetLabel.text = NSLocalizedString("no data", comment: "")
+            }
+            self.sunsetLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            self.pressureLabel.text = "\(NSLocalizedString("Pressure", comment: "")) : \(self.normalMeasureFormatter.string(from: $0.pressure))"
+            self.pressureLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            self.humidityLabel.text = "\(NSLocalizedString("Humidity", comment: "")) : \($0.humidity) %"
+            self.humidityLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            self.cloudsLabel.text = "\(NSLocalizedString("Clouds", comment: "")) : \($0.clouds) %"
+            self.cloudsLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            if let rainVolume = $0.rainVolume {
+                self.rainLabel.text = "\(NSLocalizedString("Rain", comment: "")) : \(self.normalMeasureFormatter.string(from: rainVolume))"
+            } else {
+                self.rainLabel.text = "\(NSLocalizedString("Rain", comment: "")) : \(NSLocalizedString("no data", comment: ""))"
+            }
+            self.rainLabel.textColor = conditionType(of: $0).textColor
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            let color = conditionType(of: $0).thirdColor
+            self.separator.lineColor = color
+            self.sunSeparator.lineColor = color
+            self.sunsetImageView.tintColor = color
+            self.sunriseImageView.tintColor = color
+            
+            self.forecastsTableView.separatorColor = color
+        }).disposed(by: disposeBag)
+        
+        driver.asObservable().take(1).subscribe(onNext: { _ in
+            self.animateFirst()
+        }).disposed(by: disposeBag)
+        
+        driver.skip(1).drive(onNext: {
+            let backgroundColor = conditionType(of: $0).backgroundColor
+            self.changeVisibilityDatas(false, animate: true)
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: [], animations: {
+                self.view.backgroundColor = backgroundColor
+            }, completion: nil)
+        }).disposed(by: disposeBag)
+        
+        driver.drive(onNext: {
+            self.animationView.type = WeatherAnimation(weatherType: conditionType(of: $0))
+        }).disposed(by: disposeBag)
+    }
+    
+    func setupForecastsBinding() {
+        self.nextForecasts.asDriver().drive(self.forecastsTableView.rx.items(cellIdentifier: "forecastCell")) { (_, data, cell) in
+            guard let cell = cell as? ForecastCell else {
+                return
+            }
+            let type = data.conditions.first?.type ?? .other
+            let textColor = (self.forecast.value?.conditions.first?.type ?? .other).textColor
+            let dayFormatter = DateFormatter()
+            dayFormatter.dateFormat = "HH 'h'"
+            cell.dayLabel.text = dayFormatter.string(from: data.date)
+            cell.dayLabel.textColor = textColor
+            cell.minLabel.text = self.temperatureFormatter.string(from: data.temperatureMinimum)
+            cell.minLabel.textColor = textColor
+            cell.maxLabel.text = self.temperatureFormatter.string(from: data.temperatureMaximum)
+            cell.maxLabel.textColor = textColor
+            cell.backgroundColor = type.backgroundColor.withAlphaComponent(0.3)
+        }.disposed(by: disposeBag)
+    }
+    
+    func setupErrorBinding() {
+        let driver = self.error.asDriver()
+        
+        driver
+            .filter { $0 != nil }
+            .map { $0! }
+            .map {
+            (error: ($0 as? NetworkError)?.description ?? $0.localizedDescription,
+             label: self.forecast.value == nil ? self.majorErrorLabel : self.minorErrorLabel)
+        }.drive(onNext: {
+            $0.label?.text = self.forecast.value == nil ? "Ooops ! Something went wrong ! 😵\n\($0.error)" : "Something went wrong : data not refreshed"
+            $0.label?.isHidden = false
+        }).disposed(by: disposeBag)
+        
+        driver.filter { $0 == nil }.drive(onNext: { _ in
+            self.minorErrorLabel.isHidden = true
+            self.majorErrorLabel.isHidden = true
+            self.changeVisibilityDatas(false, animate: true)
+        }).disposed(by: disposeBag)
     }
     
     func startTimer() {
@@ -343,30 +401,46 @@ class ViewController: UIViewController {
     
     @objc func fetchData() {
         print("timer")
+        
+        // TODO: bind ws error => self.error
+        // TODO: bind success => forecast
+        
+        // Like
+//        self.ws.onError {
+//            self.error.value = $0
+//        }
+//
+//        self.ws.onSuccess {
+//            if self?.error != nil {
+//                self?.error = nil
+//            }
+//            self.forecast.value = $0
+//        }
+        
         self.ws.getCurrentData { [weak self] result in
             switch result {
             case .error(let error):
-                self?.error = error
+                self?.error.value = error
                 
             case .success(let forecast):
-                if self?.error != nil {
-                    self?.error = nil
+                if self?.error.value != nil { // Warning : can erase error of forecasts
+                    self?.error.value = nil
                 }
                 print("data updated")
-                self?.forecast = forecast
+                self?.forecast.value = forecast
             }
         }
         
         self.ws.getForecasts(forecastsNumber: nil) { [weak self] result in
             switch result {
             case .error(let error):
-                self?.error = error
+                self?.error.value = error
                 
             case .success(let forecasts):
-                if self?.error != nil {
-                    self?.error = nil
+                if self?.error.value != nil { // Warning : can erase error of current Data
+                    self?.error.value = nil
                 }
-                self?.nextForecasts = forecasts.sorted { $0.date < $1.date }
+                self?.nextForecasts.value = forecasts.sorted { $0.date < $1.date }
             }
         }
     }
@@ -378,32 +452,5 @@ class ViewController: UIViewController {
         }
         self.ws.configuration.location = newLocation
         self.fetchData()
-    }
-}
-
-extension ViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.nextForecasts.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: "forecastCell", for: indexPath)
-        guard let cell = dequeuedCell as? ForecastCell else {
-            return dequeuedCell
-        }
-        let data = self.nextForecasts[indexPath.row]
-        let type = data.conditions.first?.type ?? .other
-        let textColor = (self.forecast?.conditions.first?.type ?? .other).textColor
-        let dayFormatter = DateFormatter()
-        dayFormatter.dateFormat = "HH 'h'"
-        cell.dayLabel.text = dayFormatter.string(from: data.date)
-        cell.dayLabel.textColor = textColor
-        cell.minLabel.text = self.temperatureFormatter.string(from: data.temperatureMinimum)
-        cell.minLabel.textColor = textColor
-        cell.maxLabel.text = self.temperatureFormatter.string(from: data.temperatureMaximum)
-        cell.maxLabel.textColor = textColor
-        cell.backgroundColor = type.backgroundColor.withAlphaComponent(0.3)
-        
-        return cell
     }
 }
