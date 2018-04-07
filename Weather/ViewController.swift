@@ -61,13 +61,13 @@ class ViewController: UIViewController {
         return hourFormatter
     }()
     
-    var ws: OpenWeatherService = OpenWeatherWebService(configuration: .default) // ErrorMockupService(conf: .default, error: .noData) // MockupService(conf: .default) //
+    var ws: RxOpenWeatherService = RxOpenWeatherWebService(configuration: .default) // ErrorMockupService(conf: .default, error: .noData) // MockupService(conf: .default) //
     
     var forecast: Variable<Forecast?> = Variable(nil)
     
     var nextForecasts: Variable<[Forecast]> = Variable([])
     
-    var error: Variable<Error?> = Variable(nil)
+    var error: Variable<(current: Error?, next: Error?)> = Variable((nil, nil))
     
     let disposeBag = DisposeBag()
     
@@ -368,18 +368,32 @@ class ViewController: UIViewController {
     func setupErrorBinding() {
         let driver = self.error.asDriver()
         
-        driver
-            .filter { $0 != nil }
-            .map { $0! }
-            .map {
-            (error: ($0 as? NetworkError)?.description ?? $0.localizedDescription,
-             label: self.forecast.value == nil ? self.majorErrorLabel : self.minorErrorLabel)
-        }.drive(onNext: {
-            $0.label?.text = self.forecast.value == nil ? "Ooops ! Something went wrong ! 😵\n\($0.error)" : "Something went wrong : data not refreshed"
-            $0.label?.isHidden = false
-        }).disposed(by: disposeBag)
+        struct MultipleError: Error {
+            var errors: [Error]
+            
+            var localizedDescription: String {
+                return self.errors.reduce("") { "\($0), \($1.localizedDescription)"}
+            }
+        }
         
-        driver.filter { $0 == nil }.drive(onNext: { _ in
+        let t = driver.filter { $0.current != nil && $0.next == nil }.map { $0.current! }
+        let t2 = driver.filter { $0.current == nil && $0.next != nil }.map { $0.next! }
+        let t3: SharedSequence<DriverSharingStrategy, Error> = driver.filter { $0.current != nil && $0.next != nil }.map { MultipleError(errors: [$0.current!, $0.next!]) }
+        
+        for handling in [t, t2, t3] {
+            handling.map { error in
+                (
+                    error: error.localizedDescription,
+                    label: self.forecast.value == nil ? self.majorErrorLabel : self.minorErrorLabel
+                )
+            }.drive(onNext: {
+                $0.label?.text = self.forecast.value == nil ? "Ooops ! Something went wrong ! 😵\n\($0.error)" : "Something went wrong : data not refreshed"
+                $0.label?.isHidden = false
+                self.changeVisibilityDatas(true, animate: true)
+            }).disposed(by: disposeBag)
+        }
+        
+        driver.filter { $0.0 == nil && $0.1 == nil }.drive(onNext: { _ in
             self.minorErrorLabel.isHidden = true
             self.majorErrorLabel.isHidden = true
             self.changeVisibilityDatas(false, animate: true)
@@ -401,48 +415,24 @@ class ViewController: UIViewController {
     
     @objc func fetchData() {
         print("timer")
-        
-        // TODO: bind ws error => self.error
-        // TODO: bind success => forecast
-        
-        // Like
-//        self.ws.onError {
-//            self.error.value = $0
-//        }
-//
-//        self.ws.onSuccess {
-//            if self?.error != nil {
-//                self?.error = nil
-//            }
-//            self.forecast.value = $0
-//        }
-        
-        self.ws.getCurrentData { [weak self] result in
-            switch result {
-            case .error(let error):
-                self?.error.value = error
-                
-            case .success(let forecast):
-                if self?.error.value != nil { // Warning : can erase error of forecasts
-                    self?.error.value = nil
-                }
-                print("data updated")
-                self?.forecast.value = forecast
+
+        self.ws.getCurrentData().subscribe(onNext: {
+            if self.error.value.0 != nil { // Warning : can erase error of forecasts
+                self.error.value.0 = nil
             }
-        }
+            self.forecast.value = $0
+        }, onError: { wsError in
+            self.error.value.0 = wsError
+        }).disposed(by: disposeBag)
         
-        self.ws.getForecasts(forecastsNumber: nil) { [weak self] result in
-            switch result {
-            case .error(let error):
-                self?.error.value = error
-                
-            case .success(let forecasts):
-                if self?.error.value != nil { // Warning : can erase error of current Data
-                    self?.error.value = nil
-                }
-                self?.nextForecasts.value = forecasts.sorted { $0.date < $1.date }
+        self.ws.getForecasts(forecastsNumber: nil).subscribe(onNext: {
+            if self.error.value.1 != nil { // Warning : can erase error of forecasts
+                self.error.value.1 = nil
             }
-        }
+            self.nextForecasts.value = $0
+        }, onError: { wsError in
+            self.error.value.1 = wsError
+        }).disposed(by: disposeBag)
     }
     
     @IBAction func unwindMainViewController(segue: UIStoryboardSegue) {

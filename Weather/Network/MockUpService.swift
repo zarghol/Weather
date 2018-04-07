@@ -7,13 +7,14 @@
 //
 
 import Foundation
+import RxSwift
 
 enum MockupError: Error {
     case notImplemented
 }
 
 
-class ErrorMockupService: OpenWeatherService {
+class ErrorMockupService: OpenWeatherService, RxOpenWeatherService {
     var configuration: OpenWeatherConfiguration
     
     var error: NetworkError
@@ -30,9 +31,21 @@ class ErrorMockupService: OpenWeatherService {
     func getForecasts(forecastsNumber: Int? = nil, completion: @escaping (WSResult<[Forecast]>) -> Void) {
         completion(.error(error))
     }
+    
+    func getCurrentData() -> Observable<Forecast> {
+        return Observable.deferred {
+            throw self.error
+        }
+    }
+    
+    func getForecasts(forecastsNumber: Int?) -> Observable<[Forecast]> {
+        return Observable.deferred {
+            throw self.error
+        }
+    }
 }
 
-class MockupService: OpenWeatherService {
+class MockupService: OpenWeatherService, RxOpenWeatherService {
     var configuration: OpenWeatherConfiguration
     
     init(conf: OpenWeatherConfiguration) {
@@ -66,14 +79,36 @@ class MockupService: OpenWeatherService {
     func getForecasts(forecastsNumber: Int? = nil, completion: @escaping (WSResult<[Forecast]>) -> Void) {
         completion(.error(NetworkError.noData))
         
-//        let now = Date()
-//
-//        let number = forecastsNumber ?? 12
-//        let secondIn3Hour = 3600.0 * 3.0
-//        let forecasts: [Forecast] = stride(from: 0.0, to: secondIn3Hour * Double(number), by: secondIn3Hour).map { hour in
-//            let date = now.addingTimeInterval(hour)
-//            return self.mockup(with: .clear, date: date)
-//        }
-//        completion(.success(forecasts))
+        let now = Date()
+
+        let number = forecastsNumber ?? 12
+        let secondIn3Hour = 3600.0 * 3.0
+        let forecasts: [Forecast] = stride(from: 0.0, to: secondIn3Hour * Double(number), by: secondIn3Hour).map { hour in
+            let date = now.addingTimeInterval(hour)
+            return self.mockup(with: .clear, date: date)
+        }
+        completion(.success(forecasts))
+    }
+    
+    func getCurrentData() -> Observable<Forecast> {
+        return Observable.create { observer in
+            observer.onNext(self.mockup(with: .atmosphere, date: Date()))
+            return Disposables.create()
+        }
+    }
+    
+    func getForecasts(forecastsNumber: Int?) -> Observable<[Forecast]> {
+        return Observable.create { observer in
+            let now = Date()
+            
+            let number = forecastsNumber ?? 12
+            let secondIn3Hour = 3600.0 * 3.0
+            let forecasts: [Forecast] = stride(from: 0.0, to: secondIn3Hour * Double(number), by: secondIn3Hour).map { hour in
+                let date = now.addingTimeInterval(hour)
+                return self.mockup(with: .clear, date: date)
+            }
+            observer.onNext(forecasts)
+            return Disposables.create()
+        }
     }
 }

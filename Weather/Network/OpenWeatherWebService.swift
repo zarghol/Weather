@@ -104,6 +104,81 @@ class OpenWeatherWebService: BaseWebService, WebDataService {
 
 extension OpenWeatherWebService: OpenWeatherService { }
 
+// MARK: - Reactive WS
+
+import RxSwift
+import RxCocoa
+
+protocol RxOpenWeatherService {
+    var configuration: OpenWeatherConfiguration { get set }
+    
+    func getCurrentData() -> Observable<Forecast>
+    func getForecasts(forecastsNumber: Int?) -> Observable<[Forecast]>
+}
+
+class RxOpenWeatherWebService: BaseWebService, WebDataService {
+    var configuration: OpenWeatherConfiguration
+    
+    init(configuration: OpenWeatherConfiguration) {
+        self.configuration = configuration
+    }
+    
+    private let baseAPIPath = "https://api.openweathermap.org/data/2.5"
+    
+    private let jsonDecoder: JSONDecoder = {
+        let jsonDecoder = JSONDecoder()
+        jsonDecoder.dateDecodingStrategy = .secondsSince1970
+        return jsonDecoder
+    }()
+    
+    private func buildURL(pathComponent: String, additionalQueryItems: [URLQueryItem] = []) throws -> URL {
+        guard var component = URLComponents(string: baseAPIPath) else {
+            throw OpenWeatherError.unableToBuildURLComponent
+        }
+        component.path.append(pathComponent)
+        
+        component.queryItems = self.configuration.queryItems
+        component.queryItems?.append(contentsOf: additionalQueryItems)
+        
+        guard let url = component.url else {
+            throw OpenWeatherError.unableToBuildURLFromComponent
+        }
+        return url
+    }
+    
+    func getCurrentData() -> Observable<Forecast> {
+        return Observable.deferred {
+            guard let url = try? self.buildURL(pathComponent: "/weather") else {
+                throw OpenWeatherError.urlUnavailable
+            }
+            
+            return self.session.rx.data(with: url).map { // et unowned ??
+                try self.jsonDecoder.decode(Forecast.self, from: $0)
+            }
+        }
+    }
+    
+    func getForecasts(forecastsNumber: Int? = nil) -> Observable<[Forecast]> {
+        return Observable.deferred {
+            let additionalInfos: [URLQueryItem]
+            if let forecastsNumber = forecastsNumber {
+                additionalInfos = [URLQueryItem(name: "cnt", value: "\(forecastsNumber)")]
+            } else {
+                additionalInfos = []
+            }
+            guard let url = try? self.buildURL(pathComponent: "/forecast", additionalQueryItems: additionalInfos) else {
+                throw OpenWeatherError.urlUnavailable
+            }
+            
+            return self.session.rx.data(with: url).map { try self.jsonDecoder.decode(MultipleForecast.self, from: $0).list }
+        }
+    }
+}
+
+extension RxOpenWeatherWebService: RxOpenWeatherService { }
+
+// MARK: -
+
 
 fileprivate struct MultipleForecast: Decodable {
     let list: [Forecast]
