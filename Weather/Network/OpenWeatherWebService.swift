@@ -57,7 +57,7 @@ class OpenWeatherWebService: BaseWebService, WebDataService {
             completion(.error(OpenWeatherError.urlUnavailable))
             return
         }
-        self.downloadData(at: url, completion: { [unowned self] result in
+        self.sendRequest(at: url, completion: { [unowned self] result in
             switch result {
             case .success(let data):
                 do {
@@ -85,7 +85,7 @@ class OpenWeatherWebService: BaseWebService, WebDataService {
             return
         }
         
-        self.downloadData(at: url, completion: { [unowned self] result in
+        self.sendRequest(at: url, completion: { [unowned self] result in
             switch result {
             case .success(let data):
                 do {

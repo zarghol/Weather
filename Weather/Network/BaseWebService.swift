@@ -142,8 +142,8 @@ protocol Service {
 }
 
 protocol DataService: Service {
-    func downloadData(at url: URL, completion: ((WSResult<Data>) -> Void)?)
-    func downloadData(with request: URLRequest, completion: ((WSResult<Data>) -> Void)?)
+    func sendRequest(at url: URL, completion: ((WSResult<Data>) -> Void)?)
+    func sendRequest(_ request: URLRequest, completion: ((WSResult<Data>) -> Void)?)
 }
 
 protocol SendService: Service {
@@ -218,15 +218,7 @@ extension WebDataService {
      :param: url the url to go to get datas.
      :param: completion stuff to do with received datas (Asynchrone call)
      */
-    func downloadData(at url: URL, completion: ((WSResult<Data>) -> Void)? = nil) {
-        self.sendRequest(url: url, completion: completion)
-    }
-    
-    func downloadData(with request: URLRequest, completion: ((WSResult<Data>) -> Void)? = nil) {
-        self.sendRequest(request: request, completion: completion)
-    }
-    
-    func sendRequest(url: URL, completion: ((WSResult<Data>) -> Void)?) {
+    func sendRequest(at url: URL, completion: ((WSResult<Data>) -> Void)?) {
         guard isReachable else {
             completion?(.error(NetworkError.networkUnavailable))
             return
@@ -238,7 +230,7 @@ extension WebDataService {
         task.resume()
     }
     
-    func sendRequest(request: URLRequest, completion: ((WSResult<Data>) -> Void)? = nil) {
+    func sendRequest(_ request: URLRequest, completion: ((WSResult<Data>) -> Void)? = nil) {
         guard isReachable else {
             completion?(.error(NetworkError.networkUnavailable))
             return
