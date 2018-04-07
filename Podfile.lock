@@ -9,6 +9,12 @@ DEPENDENCIES:
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
 
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - EasyAnimation
+    - RxCocoa
+    - RxSwift
+
 SPEC CHECKSUMS:
   EasyAnimation: 0bc71a385be3fc0239e487fb8f0dde626e6c7466
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
@@ -16,4 +22,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d4309696b9a181040345827659fbaa5ad87ead82
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0
