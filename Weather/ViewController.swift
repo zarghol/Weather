@@ -347,10 +347,7 @@ class ViewController: UIViewController {
     }
     
     func setupForecastsBinding() {
-        self.nextForecasts.asDriver().drive(self.forecastsTableView.rx.items(cellIdentifier: "forecastCell")) { (_, data, cell) in
-            guard let cell = cell as? ForecastCell else {
-                return
-            }
+        self.nextForecasts.asDriver().drive(self.forecastsTableView.rx.items(cellIdentifier: "forecastCell", cellType: ForecastCell.self)) { (_, data, cell) in
             let type = data.conditions.first?.type ?? .other
             let textColor = (self.forecast.value?.conditions.first?.type ?? .other).textColor
             let dayFormatter = DateFormatter()
