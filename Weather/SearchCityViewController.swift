@@ -9,6 +9,8 @@
 import UIKit
 import CoreLocation
 import MapKit
+import RxSwift
+import RxCocoa
 
 class SearchCityViewController: UITableViewController {
     
@@ -16,15 +18,11 @@ class SearchCityViewController: UITableViewController {
     
     var geocoder = CLGeocoder()
     
-    var citys = [String]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
-    }
+    var citys: Variable<[String]> = Variable([])
    
     let locationManager = CLLocationManager()
+    
+    let disposeBag = DisposeBag()
     
     var newLocation: OpenWeatherLocation?
     
@@ -38,9 +36,9 @@ class SearchCityViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView.dataSource = self
-
-        self.locationManager.delegate = self
+        self.setupSearchBinding()
+        self.setupLocationBinding()
+        
         self.searchController.searchResultsUpdater = self
 
         if #available(iOS 11.0, *) {
@@ -51,6 +49,32 @@ class SearchCityViewController: UITableViewController {
         }
         
         self.testLocationStatus(CLLocationManager.authorizationStatus())
+    }
+    
+    func setupSearchBinding() {
+        self.tableView.dataSource = nil
+        self.citys.asDriver().drive(self.tableView.rx.items(cellIdentifier: "cityCell", cellType: CityCell.self)) { (_, data, cell) in
+            cell.cityNameLabel.text = data
+        }.disposed(by: disposeBag)
+        
+        self.tableView.rx.modelSelected(String.self).asDriver().drive(onNext: { city in
+            self.newLocation = OpenWeatherLocation.query(city)
+            self.performSegue(withIdentifier: "closeSearchSegue", sender: self)
+        }).disposed(by: disposeBag)
+    }
+    
+    func setupLocationBinding() {
+        self.locationManager.rx.didUpdateLocations.map { $0.first }.filter { $0 != nil }.map { $0! }.subscribe(onNext: { position in
+            self.locationManager.stopUpdatingLocation()
+            
+            self.newLocation = OpenWeatherLocation.coordinate(position.coordinate.latitude, position.coordinate.longitude)
+            
+            self.performSegue(withIdentifier: "closeSearchSegue", sender: self)
+        }).disposed(by: disposeBag)
+        
+        self.locationManager.rx.didChangeAuthorizationStatus.subscribe(onNext: {
+            self.testLocationStatus($0)
+        }).disposed(by: disposeBag)
     }
     
     func testLocationStatus(_ status: CLAuthorizationStatus) {
@@ -68,30 +92,6 @@ class SearchCityViewController: UITableViewController {
     }
 
     // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.citys.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: "cityCell", for: indexPath)
-        guard let cell = dequeuedCell as? CityCell else {
-            dequeuedCell.textLabel?.text = self.citys[indexPath.row]
-            return dequeuedCell
-        }
-        cell.cityNameLabel.text = self.citys[indexPath.row]
-
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.newLocation = OpenWeatherLocation.query(self.citys[indexPath.row])
-        self.performSegue(withIdentifier: "closeSearchSegue", sender: self)
-    }
     
     @IBAction func useMyPosition() {
         self.locationManager.startUpdatingLocation()
@@ -118,27 +118,10 @@ extension SearchCityViewController: UISearchResultsUpdating {
             guard let places = places else {
                 return
             }
-            self?.citys = places
+            self?.citys.value = places
                 .map { ($0.locality, $0.isoCountryCode) }
                 .filter { $0.0 != nil && $0.1 != nil }
                 .map { "\($0.0!), \($0.1!) "}
         }
-    }
-}
-
-extension SearchCityViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let position = locations.first else {
-            return
-        }
-        manager.stopUpdatingLocation()
-
-        self.newLocation = OpenWeatherLocation.coordinate(position.coordinate.latitude, position.coordinate.longitude)
-        
-        self.performSegue(withIdentifier: "closeSearchSegue", sender: self)
-        
-    }
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        self.testLocationStatus(status)
     }
 }

@@ -21,6 +21,7 @@
 		187253451FF2895700CECD5B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 187253431FF2895700CECD5B /* LaunchScreen.storyboard */; };
 		187253501FF2895700CECD5B /* WeatherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872534F1FF2895700CECD5B /* WeatherTests.swift */; };
 		1872535B1FF2895700CECD5B /* WeatherUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872535A1FF2895700CECD5B /* WeatherUITests.swift */; };
+		18A825B1207B6166008C8F3F /* CLLocationManager+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A825B0207B6166008C8F3F /* CLLocationManager+rx.swift */; };
 		18AC7B4A1FF69B6A00E3D810 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18AC7B491FF69B6A00E3D810 /* LineView.swift */; };
 		18C2B5D51FF5821F0028AF24 /* RadiusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2B5D41FF5821F0028AF24 /* RadiusButton.swift */; };
 		18C2B5D91FF588670028AF24 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18C2B5DB1FF588670028AF24 /* Localizable.strings */; };
@@ -78,6 +79,7 @@
 		187253561FF2895700CECD5B /* WeatherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1872535A1FF2895700CECD5B /* WeatherUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherUITests.swift; sourceTree = "<group>"; };
 		1872535C1FF2895700CECD5B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		18A825B0207B6166008C8F3F /* CLLocationManager+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+rx.swift"; sourceTree = "<group>"; };
 		18AC7B491FF69B6A00E3D810 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
 		18C2B5D41FF5821F0028AF24 /* RadiusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadiusButton.swift; sourceTree = "<group>"; };
 		18C2B5D61FF588190028AF24 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 				1872533A1FF2895700CECD5B /* AppDelegate.swift */,
 				1872533C1FF2895700CECD5B /* ViewController.swift */,
 				1801C5601FF94049002C696D /* SearchCityViewController.swift */,
+				18A825B0207B6166008C8F3F /* CLLocationManager+rx.swift */,
 				18C47BF31FF2AD1F00D2FCB3 /* Network */,
 				18C47BF21FF2ACBE00D2FCB3 /* Model */,
 				18C47C021FF5754900D2FCB3 /* View */,
@@ -502,6 +505,7 @@
 				18C47BFD1FF40D7800D2FCB3 /* ForecastCell.swift in Sources */,
 				18C47BED1FF28B8400D2FCB3 /* Forecast.swift in Sources */,
 				1801C5591FF80507002C696D /* MockUpService.swift in Sources */,
+				18A825B1207B6166008C8F3F /* CLLocationManager+rx.swift in Sources */,
 				18179A9E2079223300F13A05 /* URLSession+Rx.swift in Sources */,
 				18C47BF71FF2B34F00D2FCB3 /* OpenWeatherWebService.swift in Sources */,
 				18C47BF51FF2AD9A00D2FCB3 /* BaseWebService.swift in Sources */,

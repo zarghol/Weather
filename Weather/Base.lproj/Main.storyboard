@@ -361,10 +361,6 @@
                                 </connections>
                             </tableViewCell>
                         </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="sNM-VK-rTj" id="NHf-cW-aOw"/>
-                            <outlet property="delegate" destination="sNM-VK-rTj" id="ekF-VD-L1B"/>
-                        </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="fPB-UA-u7e">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="2L1-LE-Uva">
